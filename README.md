@@ -45,42 +45,42 @@ LoadingTxt.Text = "CARREGANDO:"
 
 -- Mensagens de 5 em 5s
 local msgs = {
-	"Iniciando scripts...",
-	"Carregando interface...",
-	"Otimizando performance...",
-	"Preparando ambiente...",
-	"Quase lá..."
+    "Iniciando scripts...",
+    "Carregando interface...",
+    "Otimizando performance...",
+    "Preparando ambiente...",
+    "Quase lá..."
 }
 
 task.spawn(function()
-	while Black.Parent do
-		for _,m in ipairs(msgs) do
-			LoadingTxt.Text = "CARREGANDO: " .. m
-			task.wait(5)
-		end
-	end
+    while Black.Parent do
+        for _,m in ipairs(msgs) do
+            LoadingTxt.Text = "CARREGANDO: " .. m
+            task.wait(5)
+        end
+    end
 end)
 
 -- Estrelas infinitas
 task.spawn(function()
-	while Black.Parent do
-		local star = Instance.new("Frame", Black)
-		star.Size = UDim2.new(0,5,0,5)
-		star.BackgroundColor3 = Color3.fromRGB(255,255,255)
-		star.Position = UDim2.new(0,-10,math.random(),0)
-		star.ZIndex = 11
-		Instance.new("UICorner", star).CornerRadius = UDim.new(1,0)
+    while Black.Parent do
+        local star = Instance.new("Frame", Black)
+        star.Size = UDim2.new(0,5,0,5)
+        star.BackgroundColor3 = Color3.fromRGB(255,255,255)
+        star.Position = UDim2.new(0,-10,math.random(),0)
+        star.ZIndex = 11
+        Instance.new("UICorner", star).CornerRadius = UDim.new(1,0)
 
-		task.spawn(function()
-			for i = 0,1,0.01 do
-				star.Position = UDim2.new(i, -10, star.Position.Y.Scale, 0)
-				task.wait(0.02)
-			end
-			star:Destroy()
-		end)
+        task.spawn(function()
+            for i = 0,1,0.01 do
+                star.Position = UDim2.new(i, -10, star.Position.Y.Scale, 0)
+                task.wait(0.02)
+            end
+            star:Destroy()
+        end)
 
-		task.wait(0.3)
-	end
+        task.wait(0.3)
+    end
 end)
 
 -- Barra base
@@ -111,12 +111,12 @@ Percent.Text = "0%"
 
 -- Animação do loading (10s)
 task.spawn(function()
-	for i = 1, 100 do
-		BarFill.Size = UDim2.new(i/100,0,1,0)
-		Percent.Text = i.."%"
-		task.wait(0.10)
-	end
-	LoadingGui:Destroy()
+    for i = 1, 100 do
+        BarFill.Size = UDim2.new(i/100,0,1,0)
+        Percent.Text = i.."%"
+        task.wait(0.10)
+    end
+    LoadingGui:Destroy()
 end)
 
 --============================================================
@@ -141,7 +141,7 @@ OpenBtn.Parent = gui
 
 -- aparece depois de 12s
 task.delay(12, function()
-	OpenBtn.Visible = true
+    OpenBtn.Visible = true
 end)
 
 local circle = Instance.new("UICorner", OpenBtn)
@@ -160,26 +160,26 @@ local dragging = false
 local dragStart, startPos
 
 OpenBtn.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 
-	or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = OpenBtn.Position
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = OpenBtn.Position
+    end
 end)
 
 OpenBtn.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 
-	or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = false
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if dragging then
-		local delta = input.Position - dragStart
-		OpenBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
+    if dragging then
+        local delta = input.Position - dragStart
+        OpenBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 end)
 
 --============================================================
@@ -213,23 +213,23 @@ local draggingBar = false
 local dragBarStart, barStartPos
 
 MoveBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 
-	or input.UserInputType == Enum.UserInputType.Touch then
-		draggingBar = true
-		dragBarStart = input.Position
-		barStartPos = Bar.Position
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        draggingBar = true
+        dragBarStart = input.Position
+        barStartPos = Bar.Position
+    end
 end)
 
 MoveBar.InputEnded:Connect(function()
-	draggingBar = false
+    draggingBar = false
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if draggingBar then
-		local delta = input.Position - dragBarStart
-		Bar.Position = UDim2.new(barStartPos.X.Scale, barStartPos.X.Offset + delta.X, barStartPos.Y.Scale, barStartPos.Y.Offset + delta.Y)
-	end
+    if draggingBar then
+        local delta = input.Position - dragBarStart
+        Bar.Position = UDim2.new(barStartPos.X.Scale, barStartPos.X.Offset + delta.X, barStartPos.Y.Scale, barStartPos.Y.Offset + delta.Y)
+    end
 end)
 
 --========== TÍTULO KAIOX ==========
@@ -242,12 +242,12 @@ Title.TextScaled = true
 Title.Font = Enum.Font.GothamBold
 
 task.spawn(function()
-	while true do
-		for h=0,1,0.01 do
-			Title.TextColor3 = Color3.fromHSV(h,1,1)
-			task.wait(0.03)
-		end
-	end
+    while true do
+        for h=0,1,0.01 do
+            Title.TextColor3 = Color3.fromHSV(h,1,1)
+            task.wait(0.03)
+        end
+    end
 end)
 
 --========== + / - ==========
@@ -294,22 +294,22 @@ local menuDragging = false
 local menuStartPos, menuMouseStart
 
 Menu.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		menuDragging = true
-		menuStartPos = Menu.Position
-		menuMouseStart = input.Position
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        menuDragging = true
+        menuStartPos = Menu.Position
+        menuMouseStart = input.Position
+    end
 end)
 
 Menu.InputEnded:Connect(function()
-	menuDragging = false
+    menuDragging = false
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if menuDragging then
-		local delta = input.Position - menuMouseStart
-		Menu.Position = UDim2.new(menuStartPos.X.Scale, menuStartPos.X.Offset + delta.X, menuStartPos.Y.Scale, menuStartPos.Y.Offset + delta.Y)
-	end
+    if menuDragging then
+        local delta = input.Position - menuMouseStart
+        Menu.Position = UDim2.new(menuStartPos.X.Scale, menuStartPos.X.Offset + delta.X, menuStartPos.Y.Scale, menuStartPos.Y.Offset + delta.Y)
+    end
 end)
 
 --============================================================
@@ -324,23 +324,23 @@ local LeftCorner = Instance.new("UICorner", Left)
 LeftCorner.CornerRadius = UDim.new(0,14)
 
 local function CreateCategory(txt, y)
-	local b = Instance.new("TextButton", Left)
-	b.Size = UDim2.new(1,0,0,55)
-	b.Position = UDim2.new(0,0,0,y)
-	b.BackgroundColor3 = Color3.fromRGB(40,40,40)
-	b.TextColor3 = Color3.fromRGB(255,255,255)
-	b.TextScaled = true
-	b.Font = Enum.Font.GothamBold
+    local b = Instance.new("TextButton", Left)
+    b.Size = UDim2.new(1,0,0,55)
+    b.Position = UDim2.new(0,0,0,y)
+    b.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    b.TextColor3 = Color3.fromRGB(255,255,255)
+    b.TextScaled = true
+    b.Font = Enum.Font.GothamBold
 
-	local bc = Instance.new("UICorner", b)
-	bc.CornerRadius = UDim.new(0,14)
+    local bc = Instance.new("UICorner", b)
+    bc.CornerRadius = UDim.new(0,14)
 
-	local bs = Instance.new("UIStroke", b)
-	bs.Color = Color3.fromRGB(120,0,255)
-	bs.Thickness = 2
+    local bs = Instance.new("UIStroke", b)
+    bs.Color = Color3.fromRGB(120,0,255)
+    bs.Thickness = 2
 
-	b.Text = txt
-	return b
+    b.Text = txt
+    return b
 end
 
 local UniversalBtn = CreateCategory("UNIVERSAL",0)
@@ -365,23 +365,23 @@ UniversalPage.Size = UDim2.new(1,0,1,0)
 UniversalPage.BackgroundTransparency = 1
 
 local function CreateOption(txt, y)
-	local b = Instance.new("TextButton", UniversalPage)
-	b.Size = UDim2.new(1,-20,0,55)
-	b.Position = UDim2.new(0,10,0,y)
-	b.BackgroundColor3 = Color3.fromRGB(40,40,40)
-	b.TextColor3 = Color3.fromRGB(255,255,255)
-	b.TextScaled = true
-	b.Font = Enum.Font.GothamBold
+    local b = Instance.new("TextButton", UniversalPage)
+    b.Size = UDim2.new(1,-20,0,55)
+    b.Position = UDim2.new(0,10,0,y)
+    b.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    b.TextColor3 = Color3.fromRGB(255,255,255)
+    b.TextScaled = true
+    b.Font = Enum.Font.GothamBold
 
-	local bc = Instance.new("UICorner", b)
-	bc.CornerRadius = UDim.new(0,14)
+    local bc = Instance.new("UICorner", b)
+    bc.CornerRadius = UDim.new(0,14)
 
-	local bs = Instance.new("UIStroke", b)
-	bs.Color = Color3.fromRGB(120,0,255)
-	bs.Thickness = 2
+    local bs = Instance.new("UIStroke", b)
+    bs.Color = Color3.fromRGB(120,0,255)
+    bs.Thickness = 2
 
-	b.Text = txt
-	return b
+    b.Text = txt
+    return b
 end
 
 local InfiniteBtn = CreateOption("InfiniteJump", 10)
@@ -412,6 +412,9 @@ jp1.CornerRadius = UDim.new(0,14)
 local jp2 = Instance.new("UIStroke", JumpBox)
 jp2.Color = Color3.fromRGB(120,0,255)
 jp2.Thickness = 2
+
+-- Novo botão ESP
+local EspBtn = CreateOption("ESP", 250) -- Adicionando o botão ESP
 
 -- RP PAGE
 local RpPage = Instance.new("Frame", Right)
@@ -457,52 +460,52 @@ creditYT.Font = Enum.Font.GothamBold
 local toggleState = false
 
 OpenBtn.MouseButton1Click:Connect(function()
-	toggleState = not toggleState
-	if toggleState then
-		Bar.Visible = true
-	else
-		Bar.Visible = false
-		Menu.Visible = false
-		PlusBtn.Text = "+"
-		menuOpen = false
-	end
+    toggleState = not toggleState
+    if toggleState then
+        Bar.Visible = true
+    else
+        Bar.Visible = false
+        Menu.Visible = false
+        PlusBtn.Text = "+"
+        menuOpen = false
+    end
 end)
 
 CloseBtn.MouseButton1Click:Connect(function()
-	Bar.Visible = false
-	Menu.Visible = false
-	PlusBtn.Text = "+"
-	menuOpen = false
+    Bar.Visible = false
+    Menu.Visible = false
+    PlusBtn.Text = "+"
+    menuOpen = false
 end)
 
 local menuOpen = false
 PlusBtn.MouseButton1Click:Connect(function()
-	menuOpen = not menuOpen
-	if menuOpen then
-		PlusBtn.Text = "-"
-		Menu.Visible = true
-	else
-		PlusBtn.Text = "+"
-		Menu.Visible = false
-	end
+    menuOpen = not menuOpen
+    if menuOpen then
+        PlusBtn.Text = "-"
+        Menu.Visible = true
+    else
+        PlusBtn.Text = "+"
+        Menu.Visible = false
+    end
 end)
 
 UniversalBtn.MouseButton1Click:Connect(function()
-	UniversalPage.Visible = true
-	RpPage.Visible = false
-	CredPage.Visible = false
+    UniversalPage.Visible = true
+    RpPage.Visible = false
+    CredPage.Visible = false
 end)
 
 RpBtn.MouseButton1Click:Connect(function()
-	UniversalPage.Visible = false
-	RpPage.Visible = true
-	CredPage.Visible = false
+    UniversalPage.Visible = false
+    RpPage.Visible = true
+    CredPage.Visible = false
 end)
 
 CredBtn.MouseButton1Click:Connect(function()
-	UniversalPage.Visible = false
-	RpPage.Visible = false
-	CredPage.Visible = true
+    UniversalPage.Visible = false
+    RpPage.Visible = false
+    CredPage.Visible = true
 end)
 
 --============================================================
@@ -511,44 +514,86 @@ end)
 
 local infinite = false
 InfiniteBtn.MouseButton1Click:Connect(function()
-	infinite = not infinite
-	InfiniteBtn.Text = infinite and "InfiniteJump: ON" or "InfiniteJump"
+    infinite = not infinite
+    InfiniteBtn.Text = infinite and "InfiniteJump: ON" or "InfiniteJump"
 end)
 
 UIS.JumpRequest:Connect(function()
-	if infinite and LP.Character then
-		LP.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-	end
+    if infinite and LP.Character then
+        LP.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
 end)
 
 local noclip = false
 NoclipBtn.MouseButton1Click:Connect(function()
-	noclip = not noclip
-	NoclipBtn.Text = noclip and "Noclip: ON" or "Noclip"
+    noclip = not noclip
+    NoclipBtn.Text = noclip and "Noclip: ON" or "Noclip"
 end)
 
 Run.Stepped:Connect(function()
-	if noclip and LP.Character then
-		for _,v in pairs(LP.Character:GetDescendants()) do
-			if v:IsA("BasePart") then
-				v.CanCollide = false
-			end
-		end
-	end
+    if noclip and LP.Character then
+        for _,v in pairs(LP.Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end
 end)
 
 -- WalkSpeed
 SpeedBox.FocusLost:Connect(function()
-	local n = tonumber(SpeedBox.Text)
-	if n and LP.Character then
-		LP.Character.Humanoid.WalkSpeed = n
-	end
+    local n = tonumber(SpeedBox.Text)
+    if n and LP.Character then
+        LP.Character.Humanoid.WalkSpeed = n
+    end
 end)
 
 -- JumpPower
 JumpBox.FocusLost:Connect(function()
-	local n = tonumber(JumpBox.Text)
-	if n and LP.Character then
-		LP.Character.Humanoid.JumpPower = n
-	end
+    local n = tonumber(JumpBox.Text)
+    if n and LP.Character then
+        LP.Character.Humanoid.JumpPower = n
+    end
 end)
+
+-- ESP Functionality
+local espEnabled = false
+EspBtn.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    EspBtn.Text = espEnabled and "ESP: ON" or "ESP" -- Atualiza o texto do botão
+
+    -- Função para atualizar o ESP dos jogadores
+    local function updateESP()
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LP then -- Ignora o jogador local
+                local character = player.Character
+                if character then
+                    if espEnabled then
+                        local highlight = Instance.new("Highlight", character) -- Cria um destaque
+                        highlight.FillColor = player.TeamColor.Color -- Define a cor do time
+                        highlight.Adornee = character
+                    else
+                        local highlight = character:FindFirstChildOfClass("Highlight") -- Encontra o destaque
+                        if highlight then
+                            highlight:Destroy() -- Remove o destaque
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Conecta a função de atualização ao evento de jogador criado e removido
+    Players.PlayerAdded:Connect(updateESP)
+    Players.PlayerRemoving:Connect(updateESP)
+
+    updateESP() -- Atualiza o ESP imediatamente
+end)
+
+-- Atualiza o ESP quando um novo jogador entra
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        updateESP()
+    end)
+end)
+
