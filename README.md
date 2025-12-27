@@ -961,7 +961,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 
 local creditsHolder = Instance.new("Frame", extraMenu)
 creditsHolder.Size = UDim2.fromOffset(380,260)
-creditsHolder.Position = UDim2.fromOffset(385,80) -- 25 pra esquerda e 55 pra cima
+creditsHolder.Position = UDim2.fromOffset(375,75) -- 25 pra esquerda e 55 pra cima
 creditsHolder.BackgroundTransparency = 1
 creditsHolder.Visible = false
 creditsHolder.ZIndex = 20
