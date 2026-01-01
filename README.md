@@ -1075,3 +1075,80 @@ function selectPage(name)
 end
 
 selectPage("UNIVERSAL")
+----------------------------------------------------
+-- ANTI RAGDOLL COM DETECÇÃO DE IMPULSO / POSIÇÃO
+----------------------------------------------------
+local RunService = game:GetService("RunService")
+
+local antiBtn = Instance.new("TextButton")
+antiBtn.Size = UDim2.fromOffset(360,50)
+antiBtn.Text = "ANTI RAGDOLL : OFF"
+antiBtn.Font = Enum.Font.FredokaOne
+antiBtn.TextSize = 22
+antiBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+antiBtn.TextColor3 = Color3.new(1,1,1)
+antiBtn.BorderSizePixel = 0
+antiBtn.ZIndex = 21
+antiBtn.Parent = scroll
+
+local antiCorner = Instance.new("UICorner", antiBtn)
+antiCorner.CornerRadius = UDim.new(0,10)
+
+local antiRagdoll = false
+local savedPosition
+local checking
+
+local function stopCheck()
+	if checking then
+		checking:Disconnect()
+		checking = nil
+	end
+end
+
+local function startAntiRagdoll(char)
+	stopCheck()
+
+	local hum = char:WaitForChild("Humanoid")
+	local hrp = char:WaitForChild("HumanoidRootPart")
+
+	savedPosition = hrp.Position
+
+	checking = RunService.Heartbeat:Connect(function()
+		if not antiRagdoll then return end
+		if not hum or not hrp then return end
+
+		local state = hum:GetState()
+
+		if state == Enum.HumanoidStateType.Physics
+		or state == Enum.HumanoidStateType.Ragdoll
+		or hum.PlatformStand then
+
+			local dist = (hrp.Position - savedPosition).Magnitude
+			if dist > 1 then
+				hrp.CFrame = CFrame.new(savedPosition, savedPosition + hrp.CFrame.LookVector)
+				hrp.AssemblyLinearVelocity = Vector3.zero
+				hrp.AssemblyAngularVelocity = Vector3.zero
+			end
+		else
+			savedPosition = hrp.Position
+		end
+	end)
+end
+
+antiBtn.MouseButton1Click:Connect(function()
+	antiRagdoll = not antiRagdoll
+	antiBtn.Text = antiRagdoll and "ANTI RAGDOLL : ON" or "ANTI RAGDOLL : OFF"
+
+	if antiRagdoll and player.Character then
+		startAntiRagdoll(player.Character)
+	else
+		stopCheck()
+	end
+end)
+
+player.CharacterAdded:Connect(function(char)
+	if antiRagdoll then
+		task.wait(1)
+		startAntiRagdoll(char)
+	end
+end)
