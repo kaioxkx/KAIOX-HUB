@@ -1153,7 +1153,7 @@ player.CharacterAdded:Connect(function(char)
 	end
 end)
 ----------------------------------------------------
--- SEGUIR JOGADOR ALEATÓRIO (TROCA SÓ QUANDO ELE MORRER)
+-- SEGUIR JOGADOR MAIS PRÓXIMO (TROCA SÓ QUANDO ELE MORRER)
 ----------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -1183,33 +1183,39 @@ local function pararSeguir()
 end
 
 local function escolherAlvo()
-	local list = {}
+	if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+		return nil
+	end
+
+	local myHrp = player.Character.HumanoidRootPart
+	local maisPerto = nil
+	local menorDist = math.huge
 
 	for _,plr in ipairs(Players:GetPlayers()) do
 		if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-			table.insert(list, plr)
+			local hrp = plr.Character.HumanoidRootPart
+			local dist = (hrp.Position - myHrp.Position).Magnitude
+
+			if dist < menorDist then
+				menorDist = dist
+				maisPerto = plr
+			end
 		end
 	end
 
-	if #list > 0 then
-		return list[math.random(1,#list)]
-	end
-	return nil
+	return maisPerto
 end
 
 local function seguirJogador()
-	if not player.Character or not alvo then return end
+	if not seguindo or not alvo then return end
+	if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
+	if not alvo.Character or not alvo.Character:FindFirstChild("HumanoidRootPart") then return end
 
-	local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-	local alvoChar = alvo.Character
-	if not hrp or not alvoChar then return end
+	local myHrp = player.Character.HumanoidRootPart
+	local alvoHrp = alvo.Character.HumanoidRootPart
 
-	local alvoHrp = alvoChar:FindFirstChild("HumanoidRootPart")
-	if not alvoHrp then return end
-
-	-- segue atrás do alvo
 	local offset = alvoHrp.CFrame.LookVector * -3
-	hrp.CFrame = CFrame.new(alvoHrp.Position + offset, alvoHrp.Position)
+	myHrp.CFrame = CFrame.new(alvoHrp.Position + offset, alvoHrp.Position)
 end
 
 local function iniciarSeguir()
@@ -1217,7 +1223,6 @@ local function iniciarSeguir()
 	alvo = escolherAlvo()
 	if not alvo then return end
 
-	-- troca SOMENTE quando o alvo morrer
 	local hum = alvo.Character and alvo.Character:FindFirstChild("Humanoid")
 	if hum then
 		diedConn = hum.Died:Connect(function()
@@ -1229,9 +1234,7 @@ local function iniciarSeguir()
 	end
 
 	followConn = RunService.Heartbeat:Connect(function()
-		if seguindo and alvo and alvo.Character then
-			seguirJogador()
-		end
+		seguirJogador()
 	end)
 end
 
