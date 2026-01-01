@@ -1152,3 +1152,103 @@ player.CharacterAdded:Connect(function(char)
 		startAntiRagdoll(char)
 	end
 end)
+----------------------------------------------------
+-- SEGUIR JOGADOR ALEATÓRIO (TROCA SÓ QUANDO ELE MORRER)
+----------------------------------------------------
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local followBtn = Instance.new("TextButton")
+followBtn.Size = UDim2.fromOffset(360,50)
+followBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+followBtn.Text = "SEGUIR JOGADOR : OFF"
+followBtn.Font = Enum.Font.FredokaOne
+followBtn.TextSize = 22
+followBtn.TextColor3 = Color3.new(1,1,1)
+followBtn.BorderSizePixel = 0
+followBtn.ZIndex = 21
+followBtn.Parent = scroll
+
+Instance.new("UICorner", followBtn).CornerRadius = UDim.new(0,10)
+
+local seguindo = false
+local alvo = nil
+local followConn
+local diedConn
+
+local function pararSeguir()
+	if followConn then followConn:Disconnect() followConn = nil end
+	if diedConn then diedConn:Disconnect() diedConn = nil end
+	alvo = nil
+end
+
+local function escolherAlvo()
+	local list = {}
+
+	for _,plr in ipairs(Players:GetPlayers()) do
+		if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+			table.insert(list, plr)
+		end
+	end
+
+	if #list > 0 then
+		return list[math.random(1,#list)]
+	end
+	return nil
+end
+
+local function seguirJogador()
+	if not player.Character or not alvo then return end
+
+	local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+	local alvoChar = alvo.Character
+	if not hrp or not alvoChar then return end
+
+	local alvoHrp = alvoChar:FindFirstChild("HumanoidRootPart")
+	if not alvoHrp then return end
+
+	-- segue atrás do alvo
+	local offset = alvoHrp.CFrame.LookVector * -3
+	hrp.CFrame = CFrame.new(alvoHrp.Position + offset, alvoHrp.Position)
+end
+
+local function iniciarSeguir()
+	pararSeguir()
+	alvo = escolherAlvo()
+	if not alvo then return end
+
+	-- troca SOMENTE quando o alvo morrer
+	local hum = alvo.Character and alvo.Character:FindFirstChild("Humanoid")
+	if hum then
+		diedConn = hum.Died:Connect(function()
+			if seguindo then
+				task.wait(1)
+				iniciarSeguir()
+			end
+		end)
+	end
+
+	followConn = RunService.Heartbeat:Connect(function()
+		if seguindo and alvo and alvo.Character then
+			seguirJogador()
+		end
+	end)
+end
+
+followBtn.MouseButton1Click:Connect(function()
+	seguindo = not seguindo
+	followBtn.Text = seguindo and "SEGUIR JOGADOR : ON" or "SEGUIR JOGADOR : OFF"
+
+	if seguindo then
+		iniciarSeguir()
+	else
+		pararSeguir()
+	end
+end)
+
+player.CharacterAdded:Connect(function()
+	if seguindo then
+		task.wait(1)
+		iniciarSeguir()
+	end
+end)
