@@ -1308,6 +1308,8 @@ local function toggleMain()
 end
 
 flyBtn.MouseButton1Click:Connect(toggleMain)
+
+
 _G.CreateFlyMain = function()
 	local player = game.Players.LocalPlayer
 	local pg = player:WaitForChild("PlayerGui")
@@ -1317,7 +1319,6 @@ _G.CreateFlyMain = function()
 	local main = Instance.new("ScreenGui")
 	main.Name = "main"
 	main.Parent = pg
-
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local up = Instance.new("TextButton")
