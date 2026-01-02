@@ -1256,55 +1256,68 @@ player.CharacterAdded:Connect(function()
 	end
 end)
 ----------------------------------------------------
--- BOTÃO FLY (CHAMA A GUI "main" COM COOLDOWN)
+-- BOTÃO FLY (CHAMADOR DA GUI "main")
 ----------------------------------------------------
 local flyBtn = Instance.new("TextButton")
-flyBtn.Size = UDim2.fromOffset(360,50)
-flyBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-flyBtn.Text = "FLY : OFF"
-flyBtn.Font = Enum.Font.FredokaOne
-flyBtn.TextSize = 22
-flyBtn.TextColor3 = Color3.new(1,1,1)
-flyBtn.BorderSizePixel = 0
-flyBtn.ZIndex = 21
+flyBtn.Size = UDim2.new(1, -10, 0, 40)
+flyBtn.Text = "Fly"
+flyBtn.TextScaled = true
+flyBtn.Font = Enum.Font.Gotham
+flyBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+flyBtn.TextColor3 = Color3.fromRGB(255,255,255)
 flyBtn.Parent = scroll
 
-Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,10)
+local flyCorner = Instance.new("UICorner", flyBtn)
+flyCorner.CornerRadius = UDim.new(0,10)
 
-local flyOn = false
-local debounce = false
-local COOLDOWN = 5 -- tempo entre cliques
+local player = game.Players.LocalPlayer
+local cooldown = false
+local firstCleanupDone = false
 
-local function removerMainGui()
-	local gui = player.PlayerGui:FindFirstChild("main")
-	if gui then
-		gui:Destroy()
+-- remove o main UMA ÚNICA VEZ ao iniciar
+task.delay(0.2, function()
+	if firstCleanupDone then return end
+	firstCleanupDone = true
+
+	local pg = player:WaitForChild("PlayerGui")
+	local old = pg:FindFirstChild("main")
+	if old then
+		old:Destroy()
 	end
+end)
+
+local function toggleMain()
+	if cooldown then return end
+	cooldown = true
+
+	local pg = player:WaitForChild("PlayerGui")
+	local mainGui = pg:FindFirstChild("main")
+
+	if mainGui then
+		mainGui:Destroy()
+	else
+		-- cria chamando o script do fly (ele cria a GUI "main")
+		if _G.CreateFlyMain then
+			_G.CreateFlyMain()
+		end
+	end
+
+	task.delay(5, function()
+		cooldown = false
+	end)
 end
 
--- garante que o fly começa desligado
-removerMainGui()
+flyBtn.MouseButton1Click:Connect(toggleMain)
+_G.CreateFlyMain = function()
+	local player = game.Players.LocalPlayer
+	local pg = player:WaitForChild("PlayerGui")
 
-flyBtn.MouseButton1Click:Connect(function()
-	if debounce then return end
-	debounce = true
+	if pg:FindFirstChild("main") then return end
 
-	flyOn = not flyOn
-	flyBtn.Text = flyOn and "FLY : ON" or "FLY : OFF"
+	local main = Instance.new("ScreenGui")
+	main.Name = "main"
+	main.Parent = pg
 
-	if flyOn then
-		-- quando ligar, o script do fly que tu colar abaixo vai criar a GUI "main"
-		-- aqui só garantimos que não existe uma velha
-		removerMainGui()
-	else
-		-- quando desligar, destrói a GUI main
-		removerMainGui()
-	end
-
-	task.delay(COOLDOWN, function()
-		debounce = false
-	end)
-end)
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local up = Instance.new("TextButton")
