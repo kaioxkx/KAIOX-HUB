@@ -1214,7 +1214,7 @@ local function seguirJogador()
 	local myHrp = player.Character.HumanoidRootPart
 	local alvoHrp = alvo.Character.HumanoidRootPart
 
-	local offset = alvoHrp.CFrame.LookVector * -2
+	local offset = alvoHrp.CFrame.LookVector * -2.5
 	myHrp.CFrame = CFrame.new(alvoHrp.Position + offset, alvoHrp.Position)
 end
 
