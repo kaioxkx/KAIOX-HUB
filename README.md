@@ -561,88 +561,90 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL COM ESTADO LIMPO =================  
+-- ================= TOGGLE HUB FINAL =================
+local hubVisible = true
+local animando = false
 
-local clickCount = 0  
-local hubVisivel = true  
-local animando = false  
+-- Função pra pegar todos os GuiObjects do HUB
+local function getHubObjects()
+	local list = {}
 
--- estado do menu extra  
-local extraWasOpen = false  
+	local function scan(gui)
+		for _, obj in ipairs(gui:GetDescendants()) do
+			if obj:IsA("GuiObject") then
+				table.insert(list, obj)
+			end
+		end
+	end
 
--- pega todos os GuiObjects do HUB (menuGui + confirmGui)  
-local function getHubObjects()  
-    local list = {}  
+	if menuGui then scan(menuGui) end
+	if confirmGui then scan(confirmGui) end
+	if extraMenu then scan(extraMenu) end
 
-    local function scan(gui)  
-        for _, obj in ipairs(gui:GetDescendants()) do  
-            if obj:IsA("GuiObject") then  
-                table.insert(list, obj)  
-            end  
-        end  
-    end  
+	return list
+end
 
-    if menuGui then scan(menuGui) end  
-    if confirmGui then scan(confirmGui) end  
+local hubObjects = getHubObjects()
 
-    return list  
-end  
+-- Função que mostra / esconde tudo
+local function setHubVisible(show)
+	if animando then return end
+	animando = true
 
-local hubObjects = getHubObjects()  
+	for _, obj in ipairs(hubObjects) do
+		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+			obj.TextTransparency = show and 0 or 1
+		end
 
--- mostra / esconde tudo no mesmo frame  
-local function setHubVisible(show)  
-    if animando then return end  
-    animando = true  
+		if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+			obj.ImageTransparency = show and 0 or 1
+		end
 
-    -- se for esconder, guarda estado e fecha menu extra  
-    if not show and extraMenu then  
-        extraWasOpen = extraMenu.Visible  
-        extraMenu.Visible = false  
-        if toggleBtn then toggleBtn.Text = "+" end  
-    end  
+		if obj:IsA("Frame") then
+			obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1
+		end
 
-    for _, obj in ipairs(hubObjects) do  
-        if obj:IsA("TextLabel") or obj:IsA("TextButton") then  
-            obj.TextTransparency = show and 0 or 1  
-            obj.Active = show  -- Permitir interação somente quando visível
-        end  
+		obj.Visible = show
+	end
 
-        if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then  
-            obj.ImageTransparency = show and 0 or 1  
-            obj.Active = show  -- Permitir interação somente quando visível
-        end  
+	-- Menu extra não abre sozinho
+	if show and extraMenu then
+		extraMenu.Visible = false
+		if toggleBtn then toggleBtn.Text = "+" end
+	end
 
-        if obj:IsA("Frame") then  
-            obj.BackgroundTransparency = show and 0 or 1  -- Mantenha a visibilidade do fundo
-            obj.Active = show  -- Permitir interação somente quando visível
-        end  
+	hubVisible = show
+	animando = false
+end
 
-        obj.Visible = show  
-    end  
+-- Botão de toggle (coloca o seu btn do HUB aqui)
+btn.MouseButton1Click:Connect(function()
+	setHubVisible(not hubVisible)
+end)
 
-    -- quando voltar, NÃO reabre menu extra  
-    if show and extraMenu then  
-        extraMenu.Visible = false  
-        if toggleBtn then toggleBtn.Text = "+" end  
-    end  
-
-    hubVisivel = show  
-    animando = false  
-end  
-
--- clique no botão flutuante  
-btn.MouseButton1Click:Connect(function()  
-    clickCount += 1  
-
-    -- 1º clique: só abre o menu principal (script antigo cuida)  
-    if clickCount == 1 then  
-        return  
-    end  
-
-    -- 2º clique em diante: toggle total  
-    setHubVisible(not hubVisivel)  
-end) 
+-- Loop infinito pra manter tudo parado quando fechado e voltar ao normal quando aberto
+task.spawn(function()
+	while true do
+		if not hubVisible then
+			-- Garantir que nada se mexa
+			for _, obj in ipairs(hubObjects) do
+				if obj:IsA("Frame") then
+					obj.Active = false
+					obj.Draggable = false
+				end
+			end
+		else
+			-- Quando aberto, volta ao normal
+			for _, obj in ipairs(hubObjects) do
+				if obj:IsA("Frame") then
+					obj.Active = true
+					obj.Draggable = true
+				end
+			end
+		end
+		task.wait(0.1)
+	end
+end)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
 -- Holder do conteúdo da UNIVERSAL
