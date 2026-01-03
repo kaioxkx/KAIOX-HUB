@@ -1311,7 +1311,6 @@ main.Name = "main"
 main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 main.ResetOnSpawn = false
-main.Enabled = false
 
 Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
@@ -1425,32 +1424,22 @@ mini2.Visible = false
 
 speeds = 1
 
-local StarterGui = game:GetService("StarterGui")
-local player = game.Players.LocalPlayer
+local speaker = game:GetService("Players").LocalPlayer
 
-flyBtn.MouseButton1Click:Connect(function()
+local chr = game.Players.LocalPlayer.Character
+local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
 
-	-- abre o MAIN
-	main.Enabled = true
+nowe = false
 
-	-- ativa draggable só quando o main abrir
-	Frame.Active = true
-	Frame.Draggable = true
+game:GetService("StarterGui"):SetCore("SendNotification", { 
+	Title = "FLY GUI";
+	Text = "POR KAIOX🗯️";
+	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
+Duration = 5;
 
-	-- notificação junto com o main
-	StarterGui:SetCore("SendNotification", {
-		Title = "FLY GUI";
-		Text = "POR KAIOX🗯️";
-		Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
-		Duration = 5
-	})
+Frame.Active = true -- main = gui
+Frame.Draggable = true
 
-	-- pega humanoid quando abrir
-	local chr = player.Character or player.CharacterAdded:Wait()
-	local hum = chr:FindFirstChildWhichIsA("Humanoid")
-
-	nowe = false
-end)
 onof.MouseButton1Down:connect(function()
 
 	if nowe == true then
@@ -1750,14 +1739,8 @@ mine.MouseButton1Down:connect(function()
 	end
 end)
 
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
 closebutton.MouseButton1Click:Connect(function()
-    local main = playerGui:FindFirstChild("main")
-    if main then
-        main.Enabled = false
-    end
+	main:Destroy()
 end)
 
 mini.MouseButton1Click:Connect(function()
@@ -1782,6 +1765,6 @@ mini2.MouseButton1Click:Connect(function()
 	mine.Visible = true
 	mini.Visible = true
 	mini2.Visible = false
-	main.Frame.BackgroundTransparency = 0.2
+	main.Frame.BackgroundTransparency = 0 
 	closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
