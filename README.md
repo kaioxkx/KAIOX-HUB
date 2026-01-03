@@ -1436,7 +1436,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 	Title = "FLY GUI";
 	Text = "POR KAIOX🗯️";
 	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
-Duration = 5;
+Duration = 0;
 
 Frame.Active = false -- main = gui
 Frame.Draggable = true
