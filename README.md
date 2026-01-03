@@ -561,73 +561,88 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL REVISADO =================
+-- ================= TOGGLE FINAL COM ESTADO LIMPO =================  
 
-local hubVisivel = true
-local animando = false
+local clickCount = 0  
+local hubVisivel = true  
+local animando = false  
 
--- pega todos os GuiObjects do HUB (menuGui + confirmGui)
-local function getHubObjects()
-	local list = {}
+-- estado do menu extra  
+local extraWasOpen = false  
 
-	local function scan(gui)
-		for _, obj in ipairs(gui:GetDescendants()) do
-			if obj:IsA("GuiObject") then
-				table.insert(list, obj)
-			end
-		end
-	end
+-- pega todos os GuiObjects do HUB (menuGui + confirmGui)  
+local function getHubObjects()  
+    local list = {}  
 
-	if menuGui then scan(menuGui) end
-	if confirmGui then scan(confirmGui) end
+    local function scan(gui)  
+        for _, obj in ipairs(gui:GetDescendants()) do  
+            if obj:IsA("GuiObject") then  
+                table.insert(list, obj)  
+            end  
+        end  
+    end  
 
-	return list
-end
+    if menuGui then scan(menuGui) end  
+    if confirmGui then scan(confirmGui) end  
 
-local hubObjects = getHubObjects()
+    return list  
+end  
 
--- função para bloquear ou liberar interação
-local function setHubInteractable(state)
-	for _, obj in ipairs(hubObjects) do
-		if obj:IsA("GuiObject") then
-			obj.Active = state
-			obj.Selectable = state
-		end
-	end
-end
+local hubObjects = getHubObjects()  
 
--- mostra / esconde tudo
-local function setHubVisible(show)
-	if animando then return end
-	animando = true
+-- mostra / esconde tudo no mesmo frame  
+local function setHubVisible(show)  
+    if animando then return end  
+    animando = true  
 
-	for _, obj in ipairs(hubObjects) do
-		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
-			obj.TextTransparency = show and 0 or 1
-		end
-		if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
-			obj.ImageTransparency = show and 0 or 1
-		end
-		if obj:IsA("Frame") then
-			obj.BackgroundTransparency = show and 0 or 1
-		end
-		obj.Visible = show
-	end
+    -- se for esconder, guarda estado e fecha menu extra  
+    if not show and extraMenu then  
+        extraWasOpen = extraMenu.Visible  
+        extraMenu.Visible = false  
+        if toggleBtn then toggleBtn.Text = "+" end  
+    end  
 
-	-- só permite interação quando visível
-	setHubInteractable(show)
+    for _, obj in ipairs(hubObjects) do  
+        if obj:IsA("TextLabel") or obj:IsA("TextButton") then  
+            obj.TextTransparency = show and 0 or 1  
+            obj.Active = show -- permitir interação somente quando visível
+        end  
 
-	hubVisivel = show
-	animando = false
-end
+        if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then  
+            obj.ImageTransparency = show and 0 or 1  
+            obj.Active = show -- permitir interação somente quando visível
+        end  
 
--- botão flutuante: alterna visibilidade
-btn.MouseButton1Click:Connect(function()
-	setHubVisible(not hubVisivel)
-end)
+        if obj:IsA("Frame") then  
+            obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1  
+            obj.Active = show -- permitir interação somente quando visível
+        end  
 
--- inicia o menu aberto e interativo
-setHubVisible(true)
+        obj.Visible = show  
+    end  
+
+    -- quando voltar, NÃO reabre menu extra  
+    if show and extraMenu then  
+        extraMenu.Visible = false  
+        if toggleBtn then toggleBtn.Text = "+" end  
+    end  
+
+    hubVisivel = show  
+    animando = false  
+end  
+
+-- clique no botão flutuante  
+btn.MouseButton1Click:Connect(function()  
+    clickCount += 1  
+
+    -- 1º clique: só abre o menu principal (script antigo cuida)  
+    if clickCount == 1 then  
+        return  
+    end  
+
+    -- 2º clique em diante: toggle total  
+    setHubVisible(not hubVisivel)  
+end) 
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
 -- Holder do conteúdo da UNIVERSAL
