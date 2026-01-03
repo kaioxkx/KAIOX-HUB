@@ -566,14 +566,14 @@ selectPage("UNIVERSAL")
 local animando = false
 local hubObjects = {}
 
--- Função pra pegar todos os GuiObjects do HUB
+-- Função pra pegar todos os GuiObjects do HUB, mas ignorando os botões de página
 local function getHubObjects()
     local list = {}
 
     local function scan(gui)
         if gui then
             for _, obj in ipairs(gui:GetDescendants()) do
-                if obj:IsA("GuiObject") then
+                if obj:IsA("GuiObject") and obj.Name ~= "pageUniversal" and obj.Name ~= "pageNexus" and obj.Name ~= "pageCredits" then
                     table.insert(list, obj)
                 end
             end
