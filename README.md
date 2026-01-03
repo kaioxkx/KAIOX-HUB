@@ -1283,6 +1283,8 @@ flyBtn.BorderSizePixel = 0
 flyBtn.AutoButtonColor = true
 flyBtn.Parent = scroll
 
+Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,10)
+
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local StarterGui = game:GetService("StarterGui")
@@ -1330,6 +1332,10 @@ Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
 Frame.Size = UDim2.new(0, 190, 0, 57)
+
+-- Deixa o Frame invisível
+Frame.BackgroundTransparency = 1   -- 1 = totalmente invisível
+Frame.BorderSizePixel = 0          -- tira a borda
 
 up.Name = "up"
 up.Parent = Frame
