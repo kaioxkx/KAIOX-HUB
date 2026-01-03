@@ -1403,7 +1403,7 @@ mine.Name = "mine"
 mine.Parent = Frame
 mine.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
 mine.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
-mine.Size = UDim2.new(0, 45, 0, 29)
+mine.Size = UDim2.new(0, 45, 0, 25)
 mine.Font = Enum.Font.FredokaOne
 mine.Text = "-"
 mine.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1817,7 +1817,7 @@ end)
 local function aplicarContorno(obj)
 	if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 		local stroke = Instance.new("UIStroke")
-		stroke.Thickness = 2 -- Espessura do contorno
+		stroke.Thickness = 10 -- Espessura do contorno
 		stroke.Color = Color3.fromRGB(0,0,0) -- Cor do contorno
 		stroke.Parent = obj
 	end
