@@ -1343,6 +1343,9 @@ up.Font = Enum.Font.FredokaOne
 up.Text = "SUBIR"
 up.TextColor3 = Color3.fromRGB(255, 255, 255)
 up.TextSize = 14.000
+up.local stroke = Instance.new("UITextStroke", up)
+up.stroke.Thickness = 2
+up.stroke.Color = Color3.fromRGB(0,0,0)
 
 down.Name = "down"
 down.Parent = Frame
@@ -1352,7 +1355,10 @@ down.Size = UDim2.new(0, 44, 0, 28)
 down.Font = Enum.Font.FredokaOne
 down.Text = "BAIXAR"
 down.TextColor3 = Color3.fromRGB(255, 255, 255)
-down.TextSize = 13.000
+down.TextSize = 11.000
+down.local stroke = Instance.new("UITextStroke", up)
+down.stroke.Thickness = 2
+down.stroke.Color = Color3.fromRGB(0,0,0)
 
 onof.Name = "onof"
 onof.Parent = Frame
@@ -1363,6 +1369,9 @@ onof.Font = Enum.Font.FredokaOne
 onof.Text = "FLY"
 onof.TextColor3 = Color3.fromRGB(255, 255, 255)
 onof.TextSize = 14.000
+onof.local stroke = Instance.new("UITextStroke", up)
+onof.stroke.Thickness = 2
+onof.stroke.Color = Color3.fromRGB(0,0,0)
 
 TextLabel.Parent = Frame
 TextLabel.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
@@ -1374,6 +1383,9 @@ TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 14.000
 TextLabel.TextWrapped = true
+TextLabel.local stroke = Instance.new("UITextStroke", up)
+TextLabel.stroke.Thickness = 2
+TextLabel.stroke.Color = Color3.fromRGB(0,0,0)
 
 plus.Name = "plus"
 plus.Parent = Frame
@@ -1386,6 +1398,9 @@ plus.TextColor3 = Color3.fromRGB(255, 255, 255)
 plus.TextScaled = true
 plus.TextSize = 14.000
 plus.TextWrapped = true
+plus.local stroke = Instance.new("UITextStroke", up)
+plus.stroke.Thickness = 2
+plus.stroke.Color = Color3.fromRGB(0,0,0)
 
 speed.Name = "speed"
 speed.Parent = Frame
@@ -1398,6 +1413,9 @@ speed.TextColor3 = Color3.fromRGB(255, 255, 255)
 speed.TextScaled = true
 speed.TextSize = 14.000
 speed.TextWrapped = true
+speed.local stroke = Instance.new("UITextStroke", up)
+speed.stroke.Thickness = 2
+speed.stroke.Color = Color3.fromRGB(0,0,0)
 
 mine.Name = "mine"
 mine.Parent = Frame
@@ -1410,6 +1428,9 @@ mine.TextColor3 = Color3.fromRGB(255, 255, 255)
 mine.TextScaled = true
 mine.TextSize = 14.000
 mine.TextWrapped = true
+mine.local stroke = Instance.new("UITextStroke", up)
+mine.stroke.Thickness = 2
+mine.stroke.Color = Color3.fromRGB(0,0,0)
 
 closebutton.Name = "Close"
 closebutton.Parent = main.Frame
@@ -1420,6 +1441,9 @@ closebutton.Text = "X"
 closebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
 closebutton.TextSize = 30
 closebutton.Position =  UDim2.new(0, 0, -1, 27)
+closebutton.local stroke = Instance.new("UITextStroke", up)
+closebutton.stroke.Thickness = 2
+closebutton.stroke.Color = Color3.fromRGB(0,0,0)
 
 mini.Name = "minimize"
 mini.Parent = main.Frame
@@ -1430,6 +1454,9 @@ mini.Text = "-"
 mini.TextColor3 = Color3.fromRGB(255, 255, 255)
 mini.TextSize = 40
 mini.Position = UDim2.new(0, 44, -1, 27)
+mini.local stroke = Instance.new("UITextStroke", up)
+mini.stroke.Thickness = 2
+mini.stroke.Color = Color3.fromRGB(0,0,0)
 
 mini2.Name = "minimize2"
 mini2.Parent = main.Frame
@@ -1441,6 +1468,9 @@ mini2.TextColor3 = Color3.fromRGB(255, 255, 255)
 mini2.TextSize = 40
 mini2.Position = UDim2.new(0, 44, -1, 57)
 mini2.Visible = false
+mini2.local stroke = Instance.new("UITextStroke", up)
+mine2.stroke.Thickness = 2
+mine2.stroke.Color = Color3.fromRGB(0,0,0)
 
 speeds = 1
 
