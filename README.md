@@ -658,7 +658,7 @@ end)
 
 -- Holder do conteúdo da UNIVERSAL
 local universalHolder = Instance.new("Frame", extraMenu)
-universalHolder.Size = UDim2.fromOffset(380,250)
+universalHolder.Size = UDim2.fromOffset(380,260)
 universalHolder.Position = UDim2.fromOffset(395,120)
 universalHolder.BackgroundTransparency = 1
 universalHolder.Visible = true
