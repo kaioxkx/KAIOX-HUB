@@ -1437,7 +1437,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
 Duration = 5;
 
-Frame.Active = true -- main = gui
+Frame.Active = false -- main = gui
 Frame.Draggable = true
 
 onof.MouseButton1Down:connect(function()
@@ -1740,7 +1740,10 @@ mine.MouseButton1Down:connect(function()
 end)
 
 closebutton.MouseButton1Click:Connect(function()
-	main:Destroy()
+    local main = player.PlayerGui:FindFirstChild("main")
+    if main then
+        main.Enabled = false -- só desativa
+    end
 end)
 
 mini.MouseButton1Click:Connect(function()
