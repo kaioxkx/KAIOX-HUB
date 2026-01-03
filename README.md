@@ -561,61 +561,71 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE COM TELEPORTAÇÃO =================
+-- ================= TOGGLE COM TELEPORTAÇÃO SEGURA =================
 
 local animando = false
 local hubObjects = {}
 
--- Função pra pegar todos os GuiObjects do HUB, mas ignorando os botões de página
+-- Pega todos os GuiObjects do HUB, exceto os botões de páginas
 local function getHubObjects()
-    local list = {}
+	local list = {}
 
-    local function scan(gui)
-        if gui then
-            for _, obj in ipairs(gui:GetDescendants()) do
-                if obj:IsA("GuiObject") and obj.Name ~= "pageUniversal" and obj.Name ~= "pageNexus" and obj.Name ~= "pageCredits" then
-                    table.insert(list, obj)
-                end
-            end
-        end
-    end
+	local function scan(gui)
+		if gui then
+			for _, obj in ipairs(gui:GetDescendants()) do
+				if obj:IsA("GuiObject") and obj ~= pageUniversal and obj ~= pageNexus and obj ~= pageCredits then
+					table.insert(list, obj)
+				end
+			end
+		end
+	end
 
-    scan(menuGui)
-    scan(confirmGui)
-    scan(extraMenu)
+	scan(menuGui)
+	scan(confirmGui)
+	scan(extraMenu)
 
-    return list
+	return list
 end
+
+hubObjects = getHubObjects()
 
 -- Salva posições originais
 local originalPositions = {}
-hubObjects = getHubObjects()
 for _, obj in ipairs(hubObjects) do
-    originalPositions[obj] = obj.Position
+	originalPositions[obj] = obj.Position
 end
 
 local hubEscondido = false
 
 local function toggleHub()
-    if animando then return end
-    animando = true
+	if animando then return end
+	animando = true
 
-    if hubEscondido then
-        -- Volta pro lugar original
-        for _, obj in ipairs(hubObjects) do
-            obj.Position = originalPositions[obj] or obj.Position
-        end
-        hubEscondido = false
-    else
-        -- Salva posição atual e manda pra longe
-        for _, obj in ipairs(hubObjects) do
-            originalPositions[obj] = obj.Position
-            obj.Position = UDim2.new(0,999999,0,999999)
-        end
-        hubEscondido = true
-    end
+	if hubEscondido then
+		-- Volta pro lugar original
+		for _, obj in ipairs(hubObjects) do
+			obj.Position = originalPositions[obj] or obj.Position
+		end
 
-    animando = false
+		-- Reabre menus extras apenas visualmente, mas não toca nas páginas
+		if extraMenu then extraMenu.Visible = true end
+		if confirmGui then confirmGui.Visible = true end
+
+		hubEscondido = false
+	else
+		-- Fecha menus extras
+		if extraMenu then extraMenu.Visible = false end
+		if confirmGui then confirmGui.Visible = false end
+
+		-- Teleporta tudo pro infinito
+		for _, obj in ipairs(hubObjects) do
+			obj.Position = UDim2.new(0,999999,0,999999)
+		end
+
+		hubEscondido = true
+	end
+
+	animando = false
 end
 
 -- Conecta ao botão de toggle
