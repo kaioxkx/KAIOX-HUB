@@ -561,15 +561,14 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE COM TELEPORTAÇÃO SEGURA =================
+-- ================= TOGGLE FINAL COM TELEPORTAÇÃO =================
 
+local hubEscondido = false
 local animando = false
-local hubObjects = {}
 
--- Pega todos os GuiObjects do HUB, exceto os botões de páginas
+-- Função pra pegar todos os GuiObjects do hub, exceto as páginas
 local function getHubObjects()
 	local list = {}
-
 	local function scan(gui)
 		if gui then
 			for _, obj in ipairs(gui:GetDescendants()) do
@@ -583,11 +582,10 @@ local function getHubObjects()
 	scan(menuGui)
 	scan(confirmGui)
 	scan(extraMenu)
-
 	return list
 end
 
-hubObjects = getHubObjects()
+local hubObjects = getHubObjects()
 
 -- Salva posições originais
 local originalPositions = {}
@@ -595,31 +593,29 @@ for _, obj in ipairs(hubObjects) do
 	originalPositions[obj] = obj.Position
 end
 
-local hubEscondido = false
-
 local function toggleHub()
 	if animando then return end
 	animando = true
 
 	if hubEscondido then
-		-- Volta pro lugar original
+		-- volta pra posição original
 		for _, obj in ipairs(hubObjects) do
 			obj.Position = originalPositions[obj] or obj.Position
 		end
 
-		-- Reabre menus extras apenas visualmente, mas não toca nas páginas
+		-- reabre menus extras visualmente
 		if extraMenu then extraMenu.Visible = true end
 		if confirmGui then confirmGui.Visible = true end
 
 		hubEscondido = false
 	else
-		-- Fecha menus extras
+		-- fecha menus extras
 		if extraMenu then extraMenu.Visible = false end
 		if confirmGui then confirmGui.Visible = false end
 
-		-- Teleporta tudo pro infinito
+		-- teleportar tudo pra longe
 		for _, obj in ipairs(hubObjects) do
-			obj.Position = UDim2.new(0,999999,0,999999)
+			obj.Position = UDim2.new(0, 999999, 0, 999999)
 		end
 
 		hubEscondido = true
@@ -628,7 +624,7 @@ local function toggleHub()
 	animando = false
 end
 
--- Conecta ao botão de toggle
+-- Conecta o botão
 btn.MouseButton1Click:Connect(toggleHub)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
