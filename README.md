@@ -1279,12 +1279,26 @@ local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local StarterGui = game:GetService("StarterGui")
 
+-- Botão Fly já criado na GUI
+local flyBtn = script:WaitForChild("flyBtn") -- se ele estiver junto nesse script
+-- ou cria ele se não existir
+if not flyBtn then
+    flyBtn = Instance.new("TextButton")
+    flyBtn.Size = UDim2.new(0, 100, 0, 50)
+    flyBtn.Position = UDim2.new(0.5, -50, 0.5, -25)
+    flyBtn.Text = "Fly"
+    flyBtn.Font = Enum.Font.Gotham
+    flyBtn.TextColor3 = Color3.new(1,1,1)
+    flyBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    flyBtn.Parent = script
+end
+
 flyBtn.MouseButton1Click:Connect(function()
-
+    -- pegar o main do PlayerGui
     local main = playerGui:FindFirstChild("main")
-
-    -- se não existir ainda, cria
+    
     if not main then
+        -- se não existir, cria
         main = Instance.new("ScreenGui")
         main.Name = "main"
         main.Parent = playerGui
@@ -1292,14 +1306,13 @@ flyBtn.MouseButton1Click:Connect(function()
         main.ResetOnSpawn = false
         main.Enabled = true
 
-        -- AQUI tu cola TODO o código que cria o Frame, botões, textos, draggable etc
-        -- exatamente o mesmo script que tu já tem
+        -- AQUI coloca todo código da GUI (Frame, botões, draggable)
     else
-        -- se já existe, só abre
+        -- se já existe, só ativa
         main.Enabled = true
     end
 
-    -- notificação junto
+    -- Notificação
     StarterGui:SetCore("SendNotification", {
         Title = "FLY GUI",
         Text = "POR KAIOX🗯️",
@@ -1323,20 +1336,10 @@ local closebutton = Instance.new("TextButton")
 local mini = Instance.new("TextButton")
 local mini2 = Instance.new("TextButton")
 
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- SE JÁ EXISTIR UM MAIN, NÃO CRIA OUTRO
-local old = playerGui:FindFirstChild("main")
-if old then
-	main = old
-else
-	main.Name = "main"
-	main.Parent = playerGui
-	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	main.ResetOnSpawn = false
-end
-
+main.Name = "main"
+main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+main.ResetOnSpawn = false
 main.Enabled = false
 
 Frame.Parent = main
