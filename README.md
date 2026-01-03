@@ -1428,22 +1428,32 @@ mini2.Visible = false
 
 speeds = 1
 
-local speaker = game:GetService("Players").LocalPlayer
+local StarterGui = game:GetService("StarterGui")
+local player = game.Players.LocalPlayer
 
-local chr = game.Players.LocalPlayer.Character
-local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+flyBtn.MouseButton1Click:Connect(function()
 
-nowe = false
+	-- abre o MAIN
+	main.Enabled = true
 
-game:GetService("StarterGui"):SetCore("SendNotification", { 
-	Title = "FLY GUI";
-	Text = "POR KAIOX🗯️";
-	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
-Duration = 5;
+	-- ativa draggable só quando o main abrir
+	Frame.Active = true
+	Frame.Draggable = true
 
-Frame.Active = false -- main = gui
-Frame.Draggable = true
+	-- notificação junto com o main
+	StarterGui:SetCore("SendNotification", {
+		Title = "FLY GUI";
+		Text = "POR KAIOX🗯️";
+		Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
+		Duration = 5
+	})
 
+	-- pega humanoid quando abrir
+	local chr = player.Character or player.CharacterAdded:Wait()
+	local hum = chr:FindFirstChildWhichIsA("Humanoid")
+
+	nowe = false
+end)
 onof.MouseButton1Down:connect(function()
 
 	if nowe == true then
