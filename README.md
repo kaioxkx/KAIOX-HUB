@@ -1255,3 +1255,56 @@ player.CharacterAdded:Connect(function()
 		iniciarSeguir()
 	end
 end)
+----------------------------------------------------
+-- BOTÃO FLY PADRÃO KAIOX
+----------------------------------------------------
+local flyBtn = Instance.new("TextButton")
+flyBtn.Size = UDim2.new(1, -10, 0, 40)
+flyBtn.Text = "Fly"
+flyBtn.TextScaled = true
+flyBtn.Font = Enum.Font.Gotham
+flyBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+flyBtn.TextColor3 = Color3.fromRGB(255,255,255)
+flyBtn.BorderSizePixel = 0
+flyBtn.AutoButtonColor = true
+flyBtn.Parent = scroll
+
+local flyCorner = Instance.new("UICorner")
+flyCorner.CornerRadius = UDim.new(0,10)
+flyCorner.Parent = flyBtn
+
+-- Função para mostrar a GUI "main"
+local function showMainGui()
+local existingGui = player:FindFirstChild("PlayerGui"):FindFirstChild("main")
+
+if not existingGui then  
+    -- Se a GUI "main" não existir, vamos criar uma nova  
+    local main = Instance.new("ScreenGui")  
+    main.Name = "main"  
+    main.Parent = player:WaitForChild("PlayerGui")  
+    main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling  
+    main.ResetOnSpawn = false  
+
+    -- Adicionar o restante do código da GUI aqui...  
+else  
+    existingGui.Enabled = true -- Se a GUI já existe, apenas a habilitamos novamente  
+end  
+
+-- Fechar a GUI "main" quando o botão Fly for clicado  
+existingGui.Enabled = false
+
+end
+
+-- Conectar a funcionalidade do botão Fly
+flyBtn.MouseButton1Click:Connect(function()
+if not cooldown then
+cooldown = true
+
+showMainGui() -- Chama a função para mostrar a GUI  
+
+    -- Adicionar um cooldown para evitar múltiplos cliques rápidos  
+    wait(3) -- Ajuste o tempo conforme necessário  
+    cooldown = false  
+end
+
+end)
