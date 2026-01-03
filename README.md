@@ -1278,55 +1278,70 @@ flyCorner.Parent = flyBtn
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-----------------------------------------------------
--- DESTRUI QUALQUER MAIN ANTIGO AO INICIAR
-----------------------------------------------------
-for _, gui in ipairs(playerGui:GetChildren()) do
+-- ================= MENU "main" BOTÃO FLY =================
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- APAGA QUALQUER "main" ASSIM QUE O SCRIPT RODAR
+for _,gui in ipairs(playerGui:GetChildren()) do
 	if gui:IsA("ScreenGui") and gui.Name == "main" then
 		gui:Destroy()
 	end
 end
 
-----------------------------------------------------
--- FUNÇÃO PRA CRIAR A MAIN GUI
-----------------------------------------------------
-local function createMainGui()
+-- FUNÇÃO QUE CRIA O MAIN
+local function openMain()
+	-- sempre destrói antes de criar
+	local old = playerGui:FindFirstChild("main")
+	if old then old:Destroy() end
+
 	local main = Instance.new("ScreenGui")
 	main.Name = "main"
 	main.ResetOnSpawn = false
 	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	main.Parent = playerGui
 
-	-- FRAME PRINCIPAL (se isso não existir, a GUI nunca aparece)
-	local mainFrame = Instance.new("Frame", main)
-	mainFrame.Size = UDim2.fromScale(1,1)
-	mainFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
-	mainFrame.BackgroundTransparency = 0.1
-	mainFrame.Name = "MainFrame"
-	mainFrame.ZIndex = 1
+	local bg = Instance.new("Frame", main)
+	bg.Size = UDim2.fromScale(1,1)
+	bg.BackgroundColor3 = Color3.fromRGB(0,0,0)
+	bg.BackgroundTransparency = 0.4
+	bg.Active = true
 
-	-- só pra tu enxergar que abriu
-	local testLabel = Instance.new("TextLabel", mainFrame)
-	testLabel.Size = UDim2.fromOffset(400,100)
-	testLabel.Position = UDim2.fromScale(0.5,0.5)
-	testLabel.AnchorPoint = Vector2.new(0.5,0.5)
-	testLabel.Text = "MAIN ABERTO"
-	testLabel.TextScaled = true
-	testLabel.Font = Enum.Font.FredokaOne
-	testLabel.TextColor3 = Color3.new(1,1,1)
-	testLabel.BackgroundTransparency = 1
+	local panel = Instance.new("Frame", bg)
+	panel.Size = UDim2.fromOffset(420,300)
+	panel.Position = UDim2.fromScale(0.5,0.5)
+	panel.AnchorPoint = Vector2.new(0.5,0.5)
+	panel.BackgroundColor3 = Color3.fromRGB(20,20,20)
+	Instance.new("UICorner", panel).CornerRadius = UDim.new(0,14)
+
+	local title = Instance.new("TextLabel", panel)
+	title.Size = UDim2.fromScale(1,0)
+	title.Size = UDim2.fromOffset(420,60)
+	title.BackgroundTransparency = 1
+	title.Text = "MAIN ABERTO"
+	title.Font = Enum.Font.FredokaOne
+	title.TextSize = 32
+	title.TextColor3 = Color3.new(1,1,1)
+
+	local closeBtn = Instance.new("TextButton", panel)
+	closeBtn.Size = UDim2.fromOffset(160,45)
+	closeBtn.Position = UDim2.fromScale(0.5,0.85)
+	closeBtn.AnchorPoint = Vector2.new(0.5,0.5)
+	closeBtn.Text = "FECHAR"
+	closeBtn.Font = Enum.Font.FredokaOne
+	closeBtn.TextSize = 22
+	closeBtn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+	closeBtn.TextColor3 = Color3.new(1,1,1)
+	Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0,10)
+
+	closeBtn.MouseButton1Click:Connect(function()
+		main:Destroy()
+	end)
 end
 
-----------------------------------------------------
--- BOTÃO FLY = SEMPRE RECRIA A MAIN
-----------------------------------------------------
+-- CLIQUE NO BOTÃO FLY = ABRE O MAIN SEMPRE
 flyBtn.MouseButton1Click:Connect(function()
-	local old = playerGui:FindFirstChild("main")
-	if old then
-		old:Destroy()
-	end
-
-	createMainGui()
+	openMain()
 end)
 ----------------------------------------------------
 -- fly
