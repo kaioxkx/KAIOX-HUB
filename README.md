@@ -1259,12 +1259,13 @@ end)
 -- BOTÃO FLY PADRÃO KAIOX
 ----------------------------------------------------
 local flyBtn = Instance.new("TextButton")
-flyBtn.Size = UDim2.new(1, -10, 0, 40)
-flyBtn.Text = "Fly"
+flyBtn.Size = UDim2.fromOffset(360,50)
+flyBtn.Text = "FLY"
 flyBtn.TextScaled = true
-flyBtn.Font = Enum.Font.Gotham
-flyBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-flyBtn.TextColor3 = Color3.fromRGB(255,255,255)
+flyBtn.Font = Enum.Font.FredokaOne
+flyBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+flyBtn.TextColor3 = Color3.new(1,1,1)
+flyBtn.ZIndex = 21
 flyBtn.BorderSizePixel = 0
 flyBtn.AutoButtonColor = true
 flyBtn.Parent = scroll
