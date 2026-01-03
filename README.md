@@ -1279,7 +1279,7 @@ local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 ----------------------------------------------------
--- DESTRUIR QUALQUER "main" EXISTENTE AUTOMATICAMENTE
+-- DESTRUI QUALQUER MAIN ANTIGO AO INICIAR
 ----------------------------------------------------
 for _, gui in ipairs(playerGui:GetChildren()) do
 	if gui:IsA("ScreenGui") and gui.Name == "main" then
@@ -1288,27 +1288,45 @@ for _, gui in ipairs(playerGui:GetChildren()) do
 end
 
 ----------------------------------------------------
--- FUNÇÃO PARA ABRIR A GUI "main"
+-- FUNÇÃO PRA CRIAR A MAIN GUI
 ----------------------------------------------------
-local function openMainGui()
-	local main = playerGui:FindFirstChild("main")
+local function createMainGui()
+	local main = Instance.new("ScreenGui")
+	main.Name = "main"
+	main.ResetOnSpawn = false
+	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	main.Parent = playerGui
 
-	if not main then
-		main = Instance.new("ScreenGui")
-		main.Name = "main"
-		main.ResetOnSpawn = false
-		main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-		main.Parent = playerGui
+	-- FRAME PRINCIPAL (se isso não existir, a GUI nunca aparece)
+	local mainFrame = Instance.new("Frame", main)
+	mainFrame.Size = UDim2.fromScale(1,1)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+	mainFrame.BackgroundTransparency = 0.1
+	mainFrame.Name = "MainFrame"
+	mainFrame.ZIndex = 1
 
-		-- AQUI entra TODO o código de criação da tua GUI main
-	end
+	-- só pra tu enxergar que abriu
+	local testLabel = Instance.new("TextLabel", mainFrame)
+	testLabel.Size = UDim2.fromOffset(400,100)
+	testLabel.Position = UDim2.fromScale(0.5,0.5)
+	testLabel.AnchorPoint = Vector2.new(0.5,0.5)
+	testLabel.Text = "MAIN ABERTO"
+	testLabel.TextScaled = true
+	testLabel.Font = Enum.Font.FredokaOne
+	testLabel.TextColor3 = Color3.new(1,1,1)
+	testLabel.BackgroundTransparency = 1
 end
 
 ----------------------------------------------------
--- BOTÃO FLY
+-- BOTÃO FLY = SEMPRE RECRIA A MAIN
 ----------------------------------------------------
 flyBtn.MouseButton1Click:Connect(function()
-	openMainGui()
+	local old = playerGui:FindFirstChild("main")
+	if old then
+		old:Destroy()
+	end
+
+	createMainGui()
 end)
 ----------------------------------------------------
 -- fly
