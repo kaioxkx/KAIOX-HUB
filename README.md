@@ -1275,14 +1275,48 @@ local flyCorner = Instance.new("UICorner")
 flyCorner.CornerRadius = UDim.new(0,10)
 flyCorner.Parent = flyBtn
 
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local player = Players.LocalPlayer
 
 flyBtn.MouseButton1Click:Connect(function()
-	local main = playerGui:FindFirstChild("main")
-	if main then
-		main.Enabled = true
+
+	local playerGui = player:WaitForChild("PlayerGui")
+
+	-- procura o main
+	local mainGui = playerGui:FindFirstChild("main")
+
+	-- se não existir (foi destruído), cria novamente
+	if not mainGui then
+		mainGui = Instance.new("ScreenGui")
+		mainGui.Name = "main"
+		mainGui.Parent = playerGui
+		mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		mainGui.ResetOnSpawn = false
+
+		-- chama o script que monta a GUI
+		-- SEU SCRIPT DE CONSTRUÇÃO DO MAIN CONTINUA ABAIXO DISSO
 	end
+
+	-- SEMPRE ABRE
+	mainGui.Enabled = true
+
+	-- ativa draggable só quando abrir
+	Frame.Active = true
+	Frame.Draggable = true
+
+	-- notificação junto
+	StarterGui:SetCore("SendNotification", {
+		Title = "FLY GUI",
+		Text = "POR KAIOX🗯️",
+		Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
+		Duration = 5
+	})
+
+	-- atualiza humanoid
+	local chr = player.Character or player.CharacterAdded:Wait()
+	hum = chr:FindFirstChildWhichIsA("Humanoid")
+	nowe = false
 end)
 ----------------------------------------------------
 -- fly
