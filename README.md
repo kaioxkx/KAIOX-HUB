@@ -1275,40 +1275,48 @@ local flyCorner = Instance.new("UICorner")
 flyCorner.CornerRadius = UDim.new(0,10)
 flyCorner.Parent = flyBtn
 
--- Função para mostrar a GUI "main"
-local function showMainGui()
-local existingGui = player:FindFirstChild("PlayerGui"):FindFirstChild("main")
+----------------------------------------------------
+-- CONTROLE DA GUI "main"
+----------------------------------------------------
+local player = game.Players.LocalPlayer
+local mainRemovedOnce = false
 
-if not existingGui then  
-    -- Se a GUI "main" não existir, vamos criar uma nova  
-    local main = Instance.new("ScreenGui")  
-    main.Name = "main"  
-    main.Parent = player:WaitForChild("PlayerGui")  
-    main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling  
-    main.ResetOnSpawn = false  
+-- apaga qualquer "main" existente UMA ÚNICA VEZ
+local function removeOldMain()
+	if mainRemovedOnce then return end
+	mainRemovedOnce = true
 
-    -- Adicionar o restante do código da GUI aqui...  
-else  
-    existingGui.Enabled = true -- Se a GUI já existe, apenas a habilitamos novamente  
-end  
-
--- Fechar a GUI "main" quando o botão Fly for clicado  
-existingGui.Enabled = false
-
+	local gui = player:WaitForChild("PlayerGui"):FindFirstChild("main")
+	if gui then
+		gui:Destroy()
+	end
 end
 
--- Conectar a funcionalidade do botão Fly
+-- cria / mostra a GUI "main"
+local function openMainGui()
+	removeOldMain()
+
+	local playerGui = player:WaitForChild("PlayerGui")
+	local main = playerGui:FindFirstChild("main")
+
+	if not main then
+		main = Instance.new("ScreenGui")
+		main.Name = "main"
+		main.ResetOnSpawn = false
+		main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		main.Parent = playerGui
+
+		-- AQUI fica o resto da criação da tua GUI main
+	end
+
+	main.Enabled = true
+end
+
+----------------------------------------------------
+-- CLICK DO BOTÃO FLY
+----------------------------------------------------
 flyBtn.MouseButton1Click:Connect(function()
-if not cooldown then
-cooldown = true
-
-showMainGui() -- Chama a função para mostrar a GUI  
-
-    -- Adicionar um cooldown para evitar múltiplos cliques rápidos  
-    wait(3) -- Ajuste o tempo conforme necessário  
-    cooldown = false  
-end
-
+	openMainGui()
 end)
 ----------------------------------------------------
 -- fly
