@@ -1154,7 +1154,7 @@ player.CharacterAdded:Connect(function(char)
 	end
 end)
 ----------------------------------------------------
--- SEGUIR JOGADOR MAIS PRÓXIMO (TROCA SÓ QUANDO ELE MORRER)
+-- SEGUIR JOGADOR
 ----------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -1765,27 +1765,27 @@ mini2.MouseButton1Click:Connect(function()
 	closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
 local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local dragging = false
 local dragStart
-local startPos = {}
+local startPos
 
--- Elementos que vão se mover
-local guiElements = {Frame, up, down, onof, TextLabel, plus, speed, mine, closebutton, mini, mini2}
+-- Elemento que será usado para arrastar
+local dragLabel = TextLabel
 
-TextLabel.InputBegan:Connect(function(input)
+-- Guarda referência do main (ScreenGui) e do Frame principal
+local guiMain = main
+local guiFrame = Frame
+
+dragLabel.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-
-		-- salva posição inicial de todos os elementos
-		startPos = {}
-		for _, obj in pairs(guiElements) do
-			startPos[obj] = obj.Position
-		end
+		startPos = guiFrame.Position
 	end
 end)
 
-TextLabel.InputEnded:Connect(function(input)
+dragLabel.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = false
 	end
@@ -1794,14 +1794,15 @@ end)
 UIS.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
-		for _, obj in pairs(guiElements) do
-			local pos = startPos[obj]
-			if pos then
-				obj.Position = UDim2.new(
-					pos.X.Scale, pos.X.Offset + delta.X,
-					pos.Y.Scale, pos.Y.Offset + delta.Y
-				)
-			end
-		end
+		local newX = startPos.X.Offset + delta.X
+		local newY = startPos.Y.Offset + delta.Y
+
+		-- Limitar pra não sair da tela
+		local screenSize = UIS:GetScreenSize()
+		local frameSize = guiFrame.AbsoluteSize
+		newX = math.clamp(newX, 0, screenSize.X - frameSize.X)
+		newY = math.clamp(newY, 0, screenSize.Y - frameSize.Y)
+
+		guiFrame.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
 	end
 end)
