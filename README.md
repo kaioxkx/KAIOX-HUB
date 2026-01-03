@@ -605,17 +605,17 @@ local function setHubVisible(show)
     for _, obj in ipairs(hubObjects) do  
         if obj:IsA("TextLabel") or obj:IsA("TextButton") then  
             obj.TextTransparency = show and 0 or 1  
-            obj.Active = show -- permitir interação somente quando visível
+            obj.Active = show  -- Permitir interação somente quando visível
         end  
 
         if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then  
             obj.ImageTransparency = show and 0 or 1  
-            obj.Active = show -- permitir interação somente quando visível
+            obj.Active = show  -- Permitir interação somente quando visível
         end  
 
         if obj:IsA("Frame") then  
-            obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1  
-            obj.Active = show -- permitir interação somente quando visível
+            obj.BackgroundTransparency = show and 0 or 1  -- Mantenha a visibilidade do fundo
+            obj.Active = show  -- Permitir interação somente quando visível
         end  
 
         obj.Visible = show  
