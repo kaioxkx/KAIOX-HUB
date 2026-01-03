@@ -1271,48 +1271,19 @@ flyBtn.BorderSizePixel = 0
 flyBtn.AutoButtonColor = true
 flyBtn.Parent = scroll
 
-local flyCorner = Instance.new("UICorner")
-flyCorner.CornerRadius = UDim.new(0,10)
-flyCorner.Parent = flyBtn
-
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local StarterGui = game:GetService("StarterGui")
 
--- Botão Fly já criado na GUI
-local flyBtn = script:WaitForChild("flyBtn") -- se ele estiver junto nesse script
--- ou cria ele se não existir
-if not flyBtn then
-    flyBtn = Instance.new("TextButton")
-    flyBtn.Size = UDim2.new(0, 100, 0, 50)
-    flyBtn.Position = UDim2.new(0.5, -50, 0.5, -25)
-    flyBtn.Text = "Fly"
-    flyBtn.Font = Enum.Font.Gotham
-    flyBtn.TextColor3 = Color3.new(1,1,1)
-    flyBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    flyBtn.Parent = script
-end
-
 flyBtn.MouseButton1Click:Connect(function()
-    -- pegar o main do PlayerGui
+    -- pega o main que já existe no StarterCharacterScripts
     local main = playerGui:FindFirstChild("main")
-    
-    if not main then
-        -- se não existir, cria
-        main = Instance.new("ScreenGui")
-        main.Name = "main"
-        main.Parent = playerGui
-        main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        main.ResetOnSpawn = false
-        main.Enabled = true
 
-        -- AQUI coloca todo código da GUI (Frame, botões, draggable)
-    else
-        -- se já existe, só ativa
-        main.Enabled = true
+    if main then
+        main.Enabled = true -- só abre, nunca destrói
     end
 
-    -- Notificação
+    -- notificação
     StarterGui:SetCore("SendNotification", {
         Title = "FLY GUI",
         Text = "POR KAIOX🗯️",
