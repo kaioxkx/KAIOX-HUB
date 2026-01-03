@@ -561,71 +561,88 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL COM TELEPORTAÇÃO =================
+-- ================= TOGGLE FINAL COM ESTADO LIMPO =================
 
-local hubEscondido = false
+local clickCount = 0
+local hubVisivel = true
 local animando = false
 
--- Função pra pegar todos os GuiObjects do hub, exceto as páginas
-local function getHubObjects()
-	local list = {}
-	local function scan(gui)
-		if gui then
-			for _, obj in ipairs(gui:GetDescendants()) do
-				if obj:IsA("GuiObject") and obj ~= pageUniversal and obj ~= pageNexus and obj ~= pageCredits then
-					table.insert(list, obj)
-				end
-			end
-		end
-	end
+-- estado do menu extra
+local extraWasOpen = false
 
-	scan(menuGui)
-	scan(confirmGui)
-	scan(extraMenu)
-	return list
+-- pega todos os GuiObjects do HUB (menuGui + confirmGui)
+local function getHubObjects()
+local list = {}
+
+local function scan(gui)    
+	for _,obj in ipairs(gui:GetDescendants()) do    
+		if obj:IsA("GuiObject") then    
+			table.insert(list, obj)    
+		end    
+	end    
+end    
+
+if menuGui then scan(menuGui) end    
+if confirmGui then scan(confirmGui) end    
+
+return list
+
 end
 
 local hubObjects = getHubObjects()
 
--- Salva posições originais
-local originalPositions = {}
-for _, obj in ipairs(hubObjects) do
-	originalPositions[obj] = obj.Position
+-- mostra / esconde tudo no mesmo frame
+local function setHubVisible(show)
+if animando then return end
+animando = true
+
+-- se for esconder, guarda estado e fecha menu extra    
+if not show and extraMenu then    
+	extraWasOpen = extraMenu.Visible    
+	extraMenu.Visible = false    
+	if toggleBtn then toggleBtn.Text = "+" end    
+end    
+
+for _,obj in ipairs(hubObjects) do    
+	if obj:IsA("TextLabel") or obj:IsA("TextButton") then    
+		obj.TextTransparency = show and 0 or 1    
+	end    
+
+	if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then    
+		obj.ImageTransparency = show and 0 or 1    
+	end    
+
+	if obj:IsA("Frame") then    
+		obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1    
+	end    
+
+	obj.Visible = show    
+end    
+
+-- quando voltar, NÃO reabre menu extra    
+if show and extraMenu then    
+	extraMenu.Visible = false    
+	if toggleBtn then toggleBtn.Text = "+" end    
+end    
+
+hubVisivel = show    
+animando = false
+
 end
 
-local function toggleHub()
-	if animando then return end
-	animando = true
+-- clique no botão flutuante
+btn.MouseButton1Click:Connect(function()
+clickCount += 1
 
-	if hubEscondido then
-		-- volta pra posição original
-		for _, obj in ipairs(hubObjects) do
-			obj.Position = originalPositions[obj] or obj.Position
-		end
+-- 1º clique: só abre o menu principal (script antigo cuida)    
+if clickCount == 1 then    
+	return    
+end    
 
-		-- reabre menus extras visualmente
-		if extraMenu then extraMenu.Visible = true end
-		if confirmGui then confirmGui.Visible = true end
+-- 2º clique em diante: toggle total    
+setHubVisible(not hubVisivel)
 
-		hubEscondido = false
-	else
-		-- fecha menus extras
-		if extraMenu then extraMenu.Visible = false end
-		if confirmGui then confirmGui.Visible = false end
-
-		-- teleportar tudo pra longe
-		for _, obj in ipairs(hubObjects) do
-			obj.Position = UDim2.new(0, 999999, 0, 999999)
-		end
-
-		hubEscondido = true
-	end
-
-	animando = false
-end
-
--- Conecta o botão
-btn.MouseButton1Click:Connect(toggleHub)
+end)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
 -- Holder do conteúdo da UNIVERSAL
@@ -821,7 +838,7 @@ local function applyESP(plr)
 	local highlight = Instance.new("Highlight")
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.FillTransparency = 1
-	highlight.OutlineTransparency = 0.3
+	highlight.OutlineTransparency = 0
 	highlight.OutlineColor = plr.Team and plr.Team.TeamColor.Color or Color3.new(1,1,1)
 	highlight.Adornee = plr.Character
 	highlight.Parent = plr.Character
