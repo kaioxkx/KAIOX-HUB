@@ -1779,44 +1779,30 @@ end)
 -- ========== ARRASTAR TODO O MAIN FRAME PELO TextLabel ==========
 local UIS = game:GetService("UserInputService")
 local dragging = false
-local dragStart = nil
-local startPos = nil
+local dragStart
+local startPos
 
--- Elemento que vai iniciar o arrasto
-local dragLabel = TextLabel -- TextLabel que você quer usar pra arrastar
-
--- O Frame principal que vai se mover
-local guiFrame = Frame
-
--- Começa arrasto
-dragLabel.InputBegan:Connect(function(input)
+-- MOVER SOMENTE O FRAME PRINCIPAL
+TextLabel.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-		startPos = guiFrame.Position
+		startPos = Frame.Position
 	end
 end)
 
--- Termina arrasto
-dragLabel.InputEnded:Connect(function(input)
+TextLabel.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = false
 	end
 end)
 
--- Atualiza posição do Frame enquanto arrasta
 UIS.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
-		local newX = startPos.X.Offset + delta.X
-		local newY = startPos.Y.Offset + delta.Y
-
-		-- Limita para não sair da tela
-		local screenSize = UIS:GetScreenSize()
-		local frameSize = guiFrame.AbsoluteSize
-		newX = math.clamp(newX, 0, screenSize.X - frameSize.X)
-		newY = math.clamp(newY, 0, screenSize.Y - frameSize.Y)
-
-		guiFrame.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
+		Frame.Position = UDim2.new(
+			startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y
+		)
 	end
 end)
