@@ -880,80 +880,87 @@ game:GetService("RunService").Heartbeat:Connect(function()
 end)
 -- ================= AIMBOT =================
 
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
-local aiming = false
 local currentTarget = nil
-local lastCamCF = Camera.CFrame
+local lastLookVector = Camera.CFrame.LookVector
+
+local DRAG_DETECT = 0.35 -- quanto precisa mover a câmera pra soltar
+
+-- ===== FUNÇÕES =====
 
 local function isAlive(plr)
-	return plr.Character
+	return plr
+	and plr.Character
 	and plr.Character:FindFirstChild("Humanoid")
 	and plr.Character.Humanoid.Health > 0
 	and plr.Character:FindFirstChild("Head")
 end
 
-local function hasLineOfSight(targetHead)
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Blacklist
-	params.FilterDescendantsInstances = {player.Character}
+local function isInCameraView(head)
+	local camCF = Camera.CFrame
+	local dirToTarget = (head.Position - camCF.Position).Unit
 
-	local origin = Camera.CFrame.Position
-	local dir = (targetHead.Position - origin)
-
-	local result = workspace:Raycast(origin, dir, params)
-
-	if result then
-		return result.Instance:IsDescendantOf(targetHead.Parent)
-	end
-
-	return true
+	local dot = camCF.LookVector:Dot(dirToTarget)
+	return dot > 0.97 -- só quem estiver praticamente no centro da câmera
 end
 
-local function getClosestTarget()
-	local closest, dist = nil, math.huge
-
-	for _,plr in pairs(game.Players:GetPlayers()) do
+local function getTargetInView()
+	for _,plr in ipairs(Players:GetPlayers()) do
 		if plr ~= player and isAlive(plr) then
 			local head = plr.Character.Head
-			local d = (Camera.CFrame.Position - head.Position).Magnitude
-
-			if d < dist and hasLineOfSight(head) then
-				dist = d
-				closest = plr
+			if isInCameraView(head) then
+				return plr
 			end
 		end
 	end
-
-	return closest
+	return nil
 end
 
+local function cameraDragged()
+	local newLook = Camera.CFrame.LookVector
+	local delta = (newLook - lastLookVector).Magnitude
+	lastLookVector = newLook
+	return delta > DRAG_DETECT
+end
+
+-- ===== LOOP PRINCIPAL =====
+
 RunService.RenderStepped:Connect(function()
+
 	if not aimBtn:GetAttribute("State") then
 		currentTarget = nil
 		return
 	end
 
-	-- detectou movimento forte da camera → solta o alvo
-	if (Camera.CFrame.Position - lastCamCF.Position).Magnitude > 1 then
-		currentTarget = nil
-	end
-
-	if not currentTarget or not isAlive(currentTarget) then
-		currentTarget = getClosestTarget()
-	end
-
-	if currentTarget and isAlive(currentTarget) then
-		local head = currentTarget.Character.Head
-		if hasLineOfSight(head) then
-			Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
-		else
+	-- se já tiver alvo
+	if currentTarget then
+		if not isAlive(currentTarget) then
 			currentTarget = nil
+			return
 		end
+
+		-- se mexeu a câmera forte → solta
+		if cameraDragged() then
+			currentTarget = nil
+			return
+		end
+
+		local head = currentTarget.Character.Head
+		Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
+		return
 	end
 
-	lastCamCF = Camera.CFrame
+	-- só procura alvo se NÃO tiver nenhum preso
+	local newTarget = getTargetInView()
+	if newTarget then
+		currentTarget = newTarget
+	end
+
 end)
 -- ================= CONTEÚDO DA PÁGINA CRÉDITOS (Informações de tudo) =================
 
