@@ -1764,49 +1764,42 @@ mini2.MouseButton1Click:Connect(function()
 	main.Frame.BackgroundTransparency = 0 
 	closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
-local player = game.Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
-
--- elementos que vão se mover
-local draggableLabel = TextLabel
-local elements = {main, Frame, up, down, onof, TextLabel, plus, speed, mine, closebutton, mini, mini2}
-
 local dragging = false
 local dragStart
-local startPositions = {}
+local startPos = {}
 
--- quando o toque/mouse começar
-draggableLabel.InputBegan:Connect(function(input)
+-- Elementos que vão se mover
+local guiElements = {Frame, up, down, onof, TextLabel, plus, speed, mine, closebutton, mini, mini2}
+
+TextLabel.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
 
-		-- salva posição atual de todos os elementos
-		startPositions = {}
-		for _, obj in ipairs(elements) do
-			startPositions[obj] = obj.Position
+		-- salva posição inicial de todos os elementos
+		startPos = {}
+		for _, obj in pairs(guiElements) do
+			startPos[obj] = obj.Position
 		end
 	end
 end)
 
--- quando o toque/mouse terminar
-draggableLabel.InputEnded:Connect(function(input)
+TextLabel.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = false
 	end
 end)
 
--- enquanto arrasta
 UIS.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
-
-		for _, obj in ipairs(elements) do
-			local startPos = startPositions[obj]
-			if startPos then
+		for _, obj in pairs(guiElements) do
+			local pos = startPos[obj]
+			if pos then
 				obj.Position = UDim2.new(
-					startPos.X.Scale, startPos.X.Offset + delta.X,
-					startPos.Y.Scale, startPos.Y.Offset + delta.Y
+					pos.X.Scale, pos.X.Offset + delta.X,
+					pos.Y.Scale, pos.Y.Offset + delta.Y
 				)
 			end
 		end
