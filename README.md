@@ -1318,6 +1318,7 @@ Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
 Frame.BorderColor3 = Color3.fromRGB(106, 43, 217)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
 Frame.Size = UDim2.new(0, 190, 0, 57)
+Frame.BackgroundTransparency = 99
 
 up.Name = "up"
 up.Parent = Frame
