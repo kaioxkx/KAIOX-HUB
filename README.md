@@ -1275,48 +1275,34 @@ local flyCorner = Instance.new("UICorner")
 flyCorner.CornerRadius = UDim.new(0,10)
 flyCorner.Parent = flyBtn
 
-local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local player = Players.LocalPlayer
-
 flyBtn.MouseButton1Click:Connect(function()
 
-	local playerGui = player:WaitForChild("PlayerGui")
+    local main = playerGui:FindFirstChild("main")
 
-	-- procura o main
-	local mainGui = playerGui:FindFirstChild("main")
+    -- SE NÃO EXISTE, RECRIA TUDO
+    if not main then
+        main = Instance.new("ScreenGui")
+        main.Name = "main"
+        main.Parent = playerGui
+        main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        main.ResetOnSpawn = false
+        main.Enabled = true
 
-	-- se não existir (foi destruído), cria novamente
-	if not mainGui then
-		mainGui = Instance.new("ScreenGui")
-		mainGui.Name = "main"
-		mainGui.Parent = playerGui
-		mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-		mainGui.ResetOnSpawn = false
+        -- ⬇️ AQUI TU COLA TODO O SCRIPT QUE MONTA O MAIN
+        -- (Frame, botões, textos, draggable, tudo)
+    else
+        -- SE JÁ EXISTE, SÓ ABRE
+        main.Enabled = true
+    end
 
-		-- chama o script que monta a GUI
-		-- SEU SCRIPT DE CONSTRUÇÃO DO MAIN CONTINUA ABAIXO DISSO
-	end
+    -- NOTIFICAÇÃO SEMPRE JUNTO
+    StarterGui:SetCore("SendNotification", {
+        Title = "FLY GUI",
+        Text = "POR KAIOX🗯️",
+        Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
+        Duration = 5
+    })
 
-	-- SEMPRE ABRE
-	mainGui.Enabled = true
-
-	-- ativa draggable só quando abrir
-	Frame.Active = true
-	Frame.Draggable = true
-
-	-- notificação junto
-	StarterGui:SetCore("SendNotification", {
-		Title = "FLY GUI",
-		Text = "POR KAIOX🗯️",
-		Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
-		Duration = 5
-	})
-
-	-- atualiza humanoid
-	local chr = player.Character or player.CharacterAdded:Wait()
-	hum = chr:FindFirstChildWhichIsA("Humanoid")
-	nowe = false
 end)
 ----------------------------------------------------
 -- fly
