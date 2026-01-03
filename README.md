@@ -1774,7 +1774,10 @@ mine.MouseButton1Down:connect(function()
 end)
 
 closebutton.MouseButton1Click:Connect(function()
-	main:Destroy()
+    local gui = playerGui:FindFirstChild("main")
+    if gui then
+        gui:Destroy()
+    end
 end)
 
 mini.MouseButton1Click:Connect(function()
@@ -1799,6 +1802,6 @@ mini2.MouseButton1Click:Connect(function()
 	mine.Visible = true
 	mini.Visible = true
 	mini2.Visible = false
-	main.Frame.BackgroundTransparency = 0 
+	main.Frame.BackgroundTransparency = 0.2
 	closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
