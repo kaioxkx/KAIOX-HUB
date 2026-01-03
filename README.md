@@ -1278,10 +1278,11 @@ flyCorner.Parent = flyBtn
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local main = playerGui:WaitForChild("main")
-
 flyBtn.MouseButton1Click:Connect(function()
-	main.Enabled = true
+	local main = playerGui:FindFirstChild("main")
+	if main then
+		main.Enabled = true
+	end
 end)
 ----------------------------------------------------
 -- fly
@@ -1299,10 +1300,20 @@ local closebutton = Instance.new("TextButton")
 local mini = Instance.new("TextButton")
 local mini2 = Instance.new("TextButton")
 
-main.Name = "main"
-main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-main.ResetOnSpawn = false
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- SE JÁ EXISTIR UM MAIN, NÃO CRIA OUTRO
+local old = playerGui:FindFirstChild("main")
+if old then
+	main = old
+else
+	main.Name = "main"
+	main.Parent = playerGui
+	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	main.ResetOnSpawn = false
+end
+
 main.Enabled = false
 
 Frame.Parent = main
