@@ -1270,43 +1270,38 @@ flyCorner.CornerRadius = UDim.new(0, 10)
 
 local player = game.Players.LocalPlayer
 local cooldown = false
+local firstCleanupDone = false
 
 -- Função para mostrar a GUI "main"
 local function showMainGui()
     local existingGui = player:FindFirstChild("PlayerGui"):FindFirstChild("main")
 
-    if existingGui then
-        existingGui.Enabled = false -- Fecha a GUI se ela já estiver aberta
-    else
-        -- Se a GUI "main" não existir, crie e exiba-a
+    if not existingGui then
+        -- Se a GUI "main" não existir, vamos criar uma nova
         local main = Instance.new("ScreenGui")
         main.Name = "main"
         main.Parent = player:WaitForChild("PlayerGui")
         main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         main.ResetOnSpawn = false
-        
-        -- Aqui você deve adicionar o restante do seu código para construir a GUI (não incluí isso aqui para manter o foco nas suas instruções)
 
-        -- Exemplo simples de um Frame
-        local Frame = Instance.new("Frame")
-        Frame.Parent = main
-        Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
-        Frame.Position = UDim2.new(0.1, 0, 0.1, 0)
-        Frame.Size = UDim2.new(0, 190, 0, 57)
-
-        -- Você pode continuar a adicionar outros elementos à GUI como desejado
+        -- Adicionar o restante do código da GUI aqui...
+    else
+        existingGui.Enabled = true -- Se a GUI já existe, apenas a habilitamos novamente
     end
+
+    -- Fechar a GUI "main" quando o botão Fly for clicado
+    existingGui.Enabled = false
 end
 
 -- Conectar a funcionalidade do botão Fly
 flyBtn.MouseButton1Click:Connect(function()
     if not cooldown then
         cooldown = true
-        showMainGui() -- Chama a função para mostrar ou ocultar a GUI
+        
+        showMainGui() -- Chama a função para mostrar a GUI
 
         -- Adicionar um cooldown para evitar múltiplos cliques rápidos
         wait(1) -- Ajuste o tempo conforme necessário
         cooldown = false
     end
 end)
-
