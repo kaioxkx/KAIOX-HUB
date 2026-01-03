@@ -561,26 +561,47 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL REVISADO =================
+-- ================= TOGGLE FINAL CORRIGIDO =================
 
 local hubVisivel = true
 local animando = false
 
--- pega o frame principal que queremos bloquear movimento
-local mainFrame = menuGui -- ou extraMenu se for esse o pai
+-- pega todos os GuiObjects do HUB (menuGui + confirmGui)
+local function getHubObjects()
+	local list = {}
+
+	local function scan(gui)
+		for _, obj in ipairs(gui:GetDescendants()) do
+			if obj:IsA("GuiObject") then
+				table.insert(list, obj)
+			end
+		end
+	end
+
+	if menuGui then scan(menuGui) end
+	if confirmGui then scan(confirmGui) end
+
+	return list
+end
+
+local hubObjects = getHubObjects()
+
+-- função para bloquear ou liberar interação
+local function setHubInteractable(state)
+	for _, obj in ipairs(hubObjects) do
+		if obj:IsA("GuiObject") then
+			obj.Active = state
+			obj.Selectable = state
+		end
+	end
+end
 
 -- mostra / esconde tudo no mesmo frame
 local function setHubVisible(show)
 	if animando then return end
 	animando = true
 
-	-- se for esconder, guarda estado e fecha menu extra
-	if not show and extraMenu then
-		extraMenu.Visible = false
-		if toggleBtn then toggleBtn.Text = "+" end
-	end
-
-	-- percorre todos os objetos do HUB
+	-- ajusta transparência e visibilidade
 	for _, obj in ipairs(hubObjects) do
 		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 			obj.TextTransparency = show and 0 or 1
@@ -597,13 +618,8 @@ local function setHubVisible(show)
 		obj.Visible = show
 	end
 
-	-- Habilita/desabilita arrasto e clique
-	if mainFrame then
-		mainFrame.Active = show
-		if mainFrame:IsA("Frame") then
-			mainFrame.Draggable = show
-		end
-	end
+	-- desbloqueia interação apenas quando visível
+	setHubInteractable(show)
 
 	hubVisivel = show
 	animando = false
@@ -614,7 +630,7 @@ btn.MouseButton1Click:Connect(function()
 	setHubVisible(not hubVisivel)
 end)
 
--- inicializa menu aberto
+-- inicializa menu aberto e interativo
 setHubVisible(true)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
