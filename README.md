@@ -835,7 +835,7 @@ local function applyESP(plr)
 	local highlight = Instance.new("Highlight")
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.FillTransparency = 1
-	highlight.OutlineTransparency = 0
+	highlight.OutlineTransparency = 0.5
 	highlight.OutlineColor = plr.Team and plr.Team.TeamColor.Color or Color3.new(1,1,1)
 	highlight.Adornee = plr.Character
 	highlight.Parent = plr.Character
