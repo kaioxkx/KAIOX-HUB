@@ -1813,3 +1813,21 @@ UIS.InputChanged:Connect(function(input)
 		)
 	end
 end)
+-- Função pra aplicar contorno nos TextLabels e TextButtons
+local function aplicarContorno(obj)
+	if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 2 -- Espessura do contorno
+		stroke.Color = Color3.fromRGB(0,0,0) -- Cor do contorno
+		stroke.Parent = obj
+	end
+end
+
+-- Lista de elementos para contornar
+local elementos = {
+	up, down, onof, TextLabel, plus, speed, mine, closebutton, mini, mini2
+}
+
+for _, obj in ipairs(elementos) do
+	aplicarContorno(obj)
+end
