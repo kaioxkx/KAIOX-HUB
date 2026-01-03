@@ -21,7 +21,7 @@ fundo.Parent = gui
 
 -- ================= MÚSICA =================
 local musica = Instance.new("Sound")
-musica.SoundId = "rbxassetid://79148752172118"
+musica.SoundId = "rbxassetid://100258273816054"
 musica.Volume = 1
 musica.Looped = true
 musica.Parent = gui
@@ -561,9 +561,8 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL COM ESTADO LIMPO =================
+-- ================= TOGGLE FINAL REVISADO =================
 
-local clickCount = 0
 local hubVisivel = true
 local animando = false
 
@@ -575,7 +574,7 @@ local function getHubObjects()
 	local list = {}
 
 	local function scan(gui)
-		for _,obj in ipairs(gui:GetDescendants()) do
+		for _, obj in ipairs(gui:GetDescendants()) do
 			if obj:IsA("GuiObject") then
 				table.insert(list, obj)
 			end
@@ -590,6 +589,16 @@ end
 
 local hubObjects = getHubObjects()
 
+-- função para bloquear interação quando fechado
+local function setHubInteractable(state)
+	for _, obj in ipairs(hubObjects) do
+		if obj:IsA("GuiObject") then
+			obj.Active = state
+			obj.Selectable = state
+		end
+	end
+end
+
 -- mostra / esconde tudo no mesmo frame
 local function setHubVisible(show)
 	if animando then return end
@@ -602,7 +611,7 @@ local function setHubVisible(show)
 		if toggleBtn then toggleBtn.Text = "+" end
 	end
 
-	for _,obj in ipairs(hubObjects) do
+	for _, obj in ipairs(hubObjects) do
 		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 			obj.TextTransparency = show and 0 or 1
 		end
@@ -618,6 +627,9 @@ local function setHubVisible(show)
 		obj.Visible = show
 	end
 
+	-- ativa/desativa interação com GUI conforme visível
+	setHubInteractable(show)
+
 	-- quando voltar, NÃO reabre menu extra
 	if show and extraMenu then
 		extraMenu.Visible = false
@@ -630,16 +642,11 @@ end
 
 -- clique no botão flutuante
 btn.MouseButton1Click:Connect(function()
-	clickCount += 1
-
-	-- 1º clique: só abre o menu principal (script antigo cuida)
-	if clickCount == 1 then
-		return
-	end
-
-	-- 2º clique em diante: toggle total
 	setHubVisible(not hubVisivel)
 end)
+
+-- inicializa com menu aberto e interativo
+setHubVisible(true)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
 -- Holder do conteúdo da UNIVERSAL
