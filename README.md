@@ -561,7 +561,7 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL CORRIGIDO =================
+-- ================= TOGGLE FINAL REVISADO =================
 
 local hubVisivel = true
 local animando = false
@@ -596,41 +596,37 @@ local function setHubInteractable(state)
 	end
 end
 
--- mostra / esconde tudo no mesmo frame
+-- mostra / esconde tudo
 local function setHubVisible(show)
 	if animando then return end
 	animando = true
 
-	-- ajusta transparência e visibilidade
 	for _, obj in ipairs(hubObjects) do
 		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 			obj.TextTransparency = show and 0 or 1
 		end
-
 		if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
 			obj.ImageTransparency = show and 0 or 1
 		end
-
 		if obj:IsA("Frame") then
-			obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1
+			obj.BackgroundTransparency = show and 0 or 1
 		end
-
 		obj.Visible = show
 	end
 
-	-- desbloqueia interação apenas quando visível
+	-- só permite interação quando visível
 	setHubInteractable(show)
 
 	hubVisivel = show
 	animando = false
 end
 
--- clique no botão flutuante
+-- botão flutuante: alterna visibilidade
 btn.MouseButton1Click:Connect(function()
 	setHubVisible(not hubVisivel)
 end)
 
--- inicializa menu aberto e interativo
+-- inicia o menu aberto e interativo
 setHubVisible(true)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
