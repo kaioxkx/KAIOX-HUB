@@ -1255,3 +1255,58 @@ player.CharacterAdded:Connect(function()
 		iniciarSeguir()
 	end
 end)
+-- BOTÃO FLY (CHAMADOR DA GUI "main")
+local flyBtn = Instance.new("TextButton")
+flyBtn.Size = UDim2.new(1, -10, 0, 40)
+flyBtn.Text = "Fly"
+flyBtn.TextScaled = true
+flyBtn.Font = Enum.Font.Gotham
+flyBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+flyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+flyBtn.Parent = scroll
+
+local flyCorner = Instance.new("UICorner", flyBtn)
+flyCorner.CornerRadius = UDim.new(0, 10)
+
+local player = game.Players.LocalPlayer
+local cooldown = false
+
+-- Função para mostrar a GUI "main"
+local function showMainGui()
+    local existingGui = player:FindFirstChild("PlayerGui"):FindFirstChild("main")
+
+    if existingGui then
+        existingGui.Enabled = false -- Fecha a GUI se ela já estiver aberta
+    else
+        -- Se a GUI "main" não existir, crie e exiba-a
+        local main = Instance.new("ScreenGui")
+        main.Name = "main"
+        main.Parent = player:WaitForChild("PlayerGui")
+        main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        main.ResetOnSpawn = false
+        
+        -- Aqui você deve adicionar o restante do seu código para construir a GUI (não incluí isso aqui para manter o foco nas suas instruções)
+
+        -- Exemplo simples de um Frame
+        local Frame = Instance.new("Frame")
+        Frame.Parent = main
+        Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
+        Frame.Position = UDim2.new(0.1, 0, 0.1, 0)
+        Frame.Size = UDim2.new(0, 190, 0, 57)
+
+        -- Você pode continuar a adicionar outros elementos à GUI como desejado
+    end
+end
+
+-- Conectar a funcionalidade do botão Fly
+flyBtn.MouseButton1Click:Connect(function()
+    if not cooldown then
+        cooldown = true
+        showMainGui() -- Chama a função para mostrar ou ocultar a GUI
+
+        -- Adicionar um cooldown para evitar múltiplos cliques rápidos
+        wait(1) -- Ajuste o tempo conforme necessário
+        cooldown = false
+    end
+end)
+
