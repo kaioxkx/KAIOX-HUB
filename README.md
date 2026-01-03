@@ -507,13 +507,6 @@ task.spawn(function()
 	end
 end)
 
--- Linha abaixo do título (SUBIU e ficou logo embaixo)
-local titleLine = Instance.new("Frame", extraMenu)
-titleLine.Size = UDim2.fromOffset(350,3)
-titleLine.Position = UDim2.fromOffset(325,82) -- antes 95, agora mais pra cima
-titleLine.BackgroundColor3 = Color3.fromRGB(106,43,217)
-titleLine.BorderSizePixel = 0
-titleLine.ZIndex = 20
 
 -- Container das páginas
 local pagesHolder = Instance.new("Frame", extraMenu)
@@ -522,13 +515,6 @@ pagesHolder.Position = UDim2.fromOffset(105,120)
 pagesHolder.BackgroundTransparency = 1
 pagesHolder.ZIndex = 20
 
--- Linha vertical separando páginas das opções
-local sideLine = Instance.new("Frame", extraMenu)
-sideLine.Size = UDim2.fromOffset(3,225)
-sideLine.Position = UDim2.fromOffset(375,95)
-sideLine.BackgroundColor3 = Color3.fromRGB(106,43,217)
-sideLine.BorderSizePixel = 0
-sideLine.ZIndex = 20
 
 -- Função pra criar botões de página
 local function createPageButton(text, yPos)
@@ -1403,7 +1389,7 @@ mine.Name = "mine"
 mine.Parent = Frame
 mine.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
 mine.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
-mine.Size = UDim2.new(0, 45, 0, 27)
+mine.Size = UDim2.new(0, 45, 0, 28)
 mine.Font = Enum.Font.FredokaOne
 mine.Text = "-"
 mine.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1817,7 +1803,7 @@ end)
 local function aplicarContorno(obj)
 	if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 		local stroke = Instance.new("UIStroke")
-		stroke.Thickness = 4 -- Espessura do contorno
+		stroke.Thickness = 3 -- Espessura do contorno
 		stroke.Color = Color3.fromRGB(0,0,0) -- Cor do contorno
 		stroke.Parent = obj
 	end
