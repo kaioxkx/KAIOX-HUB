@@ -656,21 +656,9 @@ btn.MouseButton1Click:Connect(function()
 end)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
--- Holder do conteúdo da UNIVERSAL
-local universalHolder = Instance.new("Frame", extraMenu)
-universalHolder.Size = UDim2.fromOffset(380,260)
-universalHolder.Position = UDim2.fromOffset(395,120)
-universalHolder.BackgroundTransparency = 1
-universalHolder.Visible = true
-universalHolder.ZIndex = 20
+-- Holder do conteúdo da UNIVERSAL local universalHolder = Instance.new("Frame", extraMenu) universalHolder.Size = UDim2.fromOffset(380,260) universalHolder.Position = UDim2.fromOffset(395,120) universalHolder.BackgroundTransparency = 1 universalHolder.Visible = true universalHolder.ZIndex = 20
 
--- Scroll
-local scroll = Instance.new("ScrollingFrame", universalHolder)
-scroll.Size = UDim2.fromScale(1,1)
-scroll.CanvasSize = UDim2.fromOffset(0,520)
-scroll.ScrollBarImageTransparency = 1
-scroll.BackgroundTransparency = 1
-scroll.BorderSizePixel = 0
+-- Scroll local scroll = Instance.new("ScrollingFrame", universalHolder) scroll.Size = UDim2.fromScale(1,1) scroll.CanvasSize = UDim2.fromOffset(0,520) scroll.ScrollBarImageTransparency = 1 scroll.BackgroundTransparency = 1 scroll.BorderSizePixel = 0
 
 local layout = Instance.new("UIListLayout", scroll)
 layout.Padding = UDim.new(0,12)
