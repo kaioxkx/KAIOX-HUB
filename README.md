@@ -566,38 +566,8 @@ selectPage("UNIVERSAL")
 local hubVisivel = true
 local animando = false
 
--- estado do menu extra
-local extraWasOpen = false
-
--- pega todos os GuiObjects do HUB (menuGui + confirmGui)
-local function getHubObjects()
-	local list = {}
-
-	local function scan(gui)
-		for _, obj in ipairs(gui:GetDescendants()) do
-			if obj:IsA("GuiObject") then
-				table.insert(list, obj)
-			end
-		end
-	end
-
-	if menuGui then scan(menuGui) end
-	if confirmGui then scan(confirmGui) end
-
-	return list
-end
-
-local hubObjects = getHubObjects()
-
--- função para bloquear interação quando fechado
-local function setHubInteractable(state)
-	for _, obj in ipairs(hubObjects) do
-		if obj:IsA("GuiObject") then
-			obj.Active = state
-			obj.Selectable = state
-		end
-	end
-end
+-- pega o frame principal que queremos bloquear movimento
+local mainFrame = menuGui -- ou extraMenu se for esse o pai
 
 -- mostra / esconde tudo no mesmo frame
 local function setHubVisible(show)
@@ -606,11 +576,11 @@ local function setHubVisible(show)
 
 	-- se for esconder, guarda estado e fecha menu extra
 	if not show and extraMenu then
-		extraWasOpen = extraMenu.Visible
 		extraMenu.Visible = false
 		if toggleBtn then toggleBtn.Text = "+" end
 	end
 
+	-- percorre todos os objetos do HUB
 	for _, obj in ipairs(hubObjects) do
 		if obj:IsA("TextLabel") or obj:IsA("TextButton") then
 			obj.TextTransparency = show and 0 or 1
@@ -627,13 +597,12 @@ local function setHubVisible(show)
 		obj.Visible = show
 	end
 
-	-- ativa/desativa interação com GUI conforme visível
-	setHubInteractable(show)
-
-	-- quando voltar, NÃO reabre menu extra
-	if show and extraMenu then
-		extraMenu.Visible = false
-		if toggleBtn then toggleBtn.Text = "+" end
+	-- Habilita/desabilita arrasto e clique
+	if mainFrame then
+		mainFrame.Active = show
+		if mainFrame:IsA("Frame") then
+			mainFrame.Draggable = show
+		end
 	end
 
 	hubVisivel = show
@@ -645,7 +614,7 @@ btn.MouseButton1Click:Connect(function()
 	setHubVisible(not hubVisivel)
 end)
 
--- inicializa com menu aberto e interativo
+-- inicializa menu aberto
 setHubVisible(true)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
@@ -842,7 +811,7 @@ local function applyESP(plr)
 	local highlight = Instance.new("Highlight")
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.FillTransparency = 1
-	highlight.OutlineTransparency = 0.5
+	highlight.OutlineTransparency = 0.3
 	highlight.OutlineColor = plr.Team and plr.Team.TeamColor.Color or Color3.new(1,1,1)
 	highlight.Adornee = plr.Character
 	highlight.Parent = plr.Character
