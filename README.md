@@ -1255,36 +1255,6 @@ player.CharacterAdded:Connect(function()
 		iniciarSeguir()
 	end
 end)
--- Criação do botão Fly
-local flyBtn = Instance.new("TextButton")
-flyBtn.Size = UDim2.new(1, -10, 0, 40)
-flyBtn.Text = "Fly"
-flyBtn.TextScaled = true
-flyBtn.Font = Enum.Font.Gotham
-flyBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-flyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Presumindo que 'scroll' é outro Frame ou elemento que você já tenha definido
-flyBtn.Parent = scroll
-
-local flyCorner = Instance.new("UICorner", flyBtn)
-flyCorner.CornerRadius = UDim.new(0, 10)
-
-local player = game.Players.LocalPlayer
-local cooldown = false
-local firstCleanupDone = false
-
--- Função para mostrar a GUI "main"
-local function showMainGui()
-    local existingGui = player:FindFirstChild("PlayerGui"):FindFirstChild("main")
-
-    if not existingGui then
-        -- Se a GUI "main" não existir, vamos criar uma nova
-        local main = Instance.new("ScreenGui")
-        main.Name = "main"
-        main.Parent = player:WaitForChild("PlayerGui")
-        main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        main.ResetOnSpawn = false
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local up = Instance.new("TextButton")
