@@ -561,80 +561,65 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL COM ENABLE =================
+-- ================= TOGGLE COM TELEPORTAÇÃO =================
 
-local clickCount = 0
-local hubEnabled = true
 local animando = false
+local hubObjects = {}
 
--- estado do menu extra
-local extraWasOpen = false
-
--- pega todos os GuiObjects do HUB (menuGui + confirmGui)
+-- Função pra pegar todos os GuiObjects do HUB
 local function getHubObjects()
-	local list = {}
+    local list = {}
 
-	local function scan(gui)
-		for _, obj in ipairs(gui:GetDescendants()) do
-			if obj:IsA("GuiObject") then
-				table.insert(list, obj, obj.Parent)
-			end
-		end
-	end
+    local function scan(gui)
+        if gui then
+            for _, obj in ipairs(gui:GetDescendants()) do
+                if obj:IsA("GuiObject") then
+                    table.insert(list, obj)
+                end
+            end
+        end
+    end
 
-	if menuGui then scan(menuGui) end
-	if confirmGui then scan(confirmGui) end
+    scan(menuGui)
+    scan(confirmGui)
+    scan(extraMenu)
 
-	return list
+    return list
 end
 
-local hubObjects = getHubObjects()
-
--- pega o ScreenGui raiz do HUB (considerando menuGui ou confirmGui)
-local function getRootGui()
-	return menuGui or confirmGui
+-- Salva posições originais
+local originalPositions = {}
+hubObjects = getHubObjects()
+for _, obj in ipairs(hubObjects) do
+    originalPositions[obj] = obj.Position
 end
 
--- mostra / esconde usando Enabled
-local function setHubEnabled(enable)
-	if animando then return end
-	animando = true
+local hubEscondido = false
 
-	local root = getRootGui()
-	if not root then animando = false return end
+local function toggleHub()
+    if animando then return end
+    animando = true
 
-	-- se for desativar, guarda estado e fecha menu extra
-	if not enable and extraMenu then
-		extraWasOpen = extraMenu.Visible
-		extraMenu.Visible = false
-		if toggleBtn then toggleBtn.Text = "+" end
-	end
+    if hubEscondido then
+        -- Volta pro lugar original
+        for _, obj in ipairs(hubObjects) do
+            obj.Position = originalPositions[obj] or obj.Position
+        end
+        hubEscondido = false
+    else
+        -- Salva posição atual e manda pra longe
+        for _, obj in ipairs(hubObjects) do
+            originalPositions[obj] = obj.Position
+            obj.Position = UDim2.new(0,999999,0,999999)
+        end
+        hubEscondido = true
+    end
 
-	-- ativa/desativa o ScreenGui raiz
-	root.Enabled = enable
-
-	-- mantém o extraMenu fechado
-	if enable and extraMenu then
-		extraMenu.Visible = false
-		if toggleBtn then toggleBtn.Text = "+" end
-	end
-
-	hubEnabled = enable
-	animando = false
+    animando = false
 end
 
--- clique no botão flutuante
-btn.MouseButton1Click:Connect(function()
-	clickCount += 1
-
-	-- 1º clique: só abre o menu principal (script antigo cuida)
-	if clickCount == 1 then
-		return
-	end
-
-	-- 2º clique em diante: toggle usando Enabled
-	setHubEnabled(not hubEnabled)
-end)
+-- Conecta ao botão de toggle
+btn.MouseButton1Click:Connect(toggleHub)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
 -- Holder do conteúdo da UNIVERSAL
@@ -1812,35 +1797,3 @@ local elementos = {
 for _, obj in ipairs(elementos) do
 	aplicarContorno(obj)
 end
--- ================= BLOQUEIO DE MOVIMENTO QUANDO FECHADO =================
-task.spawn(function()
-	while true do
-		local hubObjects = {}
-
-		-- Pega todos os GuiObjects do HUB
-		local function scan(gui)
-			for _, obj in ipairs(gui:GetDescendants()) do
-				if obj:IsA("Frame") then
-					table.insert(hubObjects, obj)
-				end
-			end
-		end
-
-		if menuGui then scan(menuGui) end
-		if confirmGui then scan(confirmGui) end
-		if extraMenu then scan(extraMenu) end
-
-		-- Ajusta o estado dos frames baseado na visibilidade
-		for _, obj in ipairs(hubObjects) do
-			if hubVisible then
-				obj.Active = true
-				obj.Draggable = true
-			else
-				obj.Active = false
-				obj.Draggable = false
-			end
-		end
-
-		task.wait(0.1) -- evita sobrecarregar
-	end
-end)
