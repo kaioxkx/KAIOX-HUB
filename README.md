@@ -838,7 +838,7 @@ local function applyESP(plr)
 	local highlight = Instance.new("Highlight")
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.FillTransparency = 1
-	highlight.OutlineTransparency = 0
+	highlight.OutlineTransparency = 0.1
 	highlight.OutlineColor = plr.Team and plr.Team.TeamColor.Color or Color3.new(1,1,1)
 	highlight.Adornee = plr.Character
 	highlight.Parent = plr.Character
@@ -878,89 +878,91 @@ game:GetService("RunService").Heartbeat:Connect(function()
 		refreshESP()
 	end
 end)
--- ================= AIMBOT =================
-
-local Players = game:GetService("Players")
+-- ================= AIMBOT MELHORADO =================
 local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
+local player = game.Players.LocalPlayer
 
+local aiming = false
 local currentTarget = nil
-local lastLookVector = Camera.CFrame.LookVector
+local lastCamCF = Camera.CFrame
 
-local DRAG_DETECT = 0.35 -- quanto precisa mover a câmera pra soltar
-
--- ===== FUNÇÕES =====
-
+-- Verifica se o jogador está vivo
 local function isAlive(plr)
-	return plr
-	and plr.Character
-	and plr.Character:FindFirstChild("Humanoid")
-	and plr.Character.Humanoid.Health > 0
-	and plr.Character:FindFirstChild("Head")
+	return plr.Character
+		and plr.Character:FindFirstChild("Humanoid")
+		and plr.Character.Humanoid.Health > 0
+		and plr.Character:FindFirstChild("Head")
 end
 
-local function isInCameraView(head)
-	local camCF = Camera.CFrame
-	local dirToTarget = (head.Position - camCF.Position).Unit
+-- Raycast pra checar se tem linha de visão
+local function hasLineOfSight(targetHead)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Blacklist
+	params.FilterDescendantsInstances = {player.Character}
+	params.IgnoreWater = true
 
-	local dot = camCF.LookVector:Dot(dirToTarget)
-	return dot > 0.97 -- só quem estiver praticamente no centro da câmera
+	local origin = Camera.CFrame.Position
+	local direction = targetHead.Position - origin
+	local result = workspace:Raycast(origin, direction, params)
+
+	-- Se acertou algum objeto que não seja o alvo → bloqueado
+	if result then
+		return result.Instance:IsDescendantOf(targetHead.Parent)
+	end
+
+	return true
 end
 
-local function getTargetInView()
-	for _,plr in ipairs(Players:GetPlayers()) do
+-- Pega o jogador mais próximo dentro da visão
+local function getClosestVisibleTarget()
+	local closest, minDist = nil, math.huge
+	local origin = Camera.CFrame.Position
+
+	for _, plr in pairs(game.Players:GetPlayers()) do
 		if plr ~= player and isAlive(plr) then
 			local head = plr.Character.Head
-			if isInCameraView(head) then
-				return plr
+			local dist = (origin - head.Position).Magnitude
+
+			-- Só considera se estiver visível
+			if dist < minDist and hasLineOfSight(head) then
+				minDist = dist
+				closest = plr
 			end
 		end
 	end
-	return nil
+
+	return closest
 end
 
-local function cameraDragged()
-	local newLook = Camera.CFrame.LookVector
-	local delta = (newLook - lastLookVector).Magnitude
-	lastLookVector = newLook
-	return delta > DRAG_DETECT
-end
-
--- ===== LOOP PRINCIPAL =====
-
+-- Atualização toda frame
 RunService.RenderStepped:Connect(function()
-
 	if not aimBtn:GetAttribute("State") then
 		currentTarget = nil
 		return
 	end
 
-	-- se já tiver alvo
-	if currentTarget then
-		if not isAlive(currentTarget) then
-			currentTarget = nil
-			return
-		end
+	-- Se movimentou a câmera rapidamente → solta alvo
+	if (Camera.CFrame.Position - lastCamCF.Position).Magnitude > 1 then
+		currentTarget = nil
+	end
 
-		-- se mexeu a câmera forte → solta
-		if cameraDragged() then
-			currentTarget = nil
-			return
-		end
+	-- Atualiza alvo se necessário
+	if not currentTarget or not isAlive(currentTarget) then
+		currentTarget = getClosestVisibleTarget()
+	end
 
+	-- Foca no alvo apenas se ele estiver visível
+	if currentTarget and isAlive(currentTarget) then
 		local head = currentTarget.Character.Head
-		Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
-		return
+		if hasLineOfSight(head) then
+			Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
+		else
+			currentTarget = nil
+		end
 	end
 
-	-- só procura alvo se NÃO tiver nenhum preso
-	local newTarget = getTargetInView()
-	if newTarget then
-		currentTarget = newTarget
-	end
-
+	lastCamCF = Camera.CFrame
 end)
 -- ================= CONTEÚDO DA PÁGINA CRÉDITOS (Informações de tudo) =================
 
