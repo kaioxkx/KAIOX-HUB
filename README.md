@@ -942,10 +942,11 @@ RunService.RenderStepped:Connect(function()
 		return
 	end
 
-	-- Se movimentou a câmera rapidamente → solta alvo
-	if (Camera.CFrame.Position - lastCamCF.Position).Magnitude > 1 then
-		currentTarget = nil
-	end
+local camDelta = (Camera.CFrame.LookVector - lastCamCF.LookVector).Magnitude
+
+if camDelta > 0.015 then -- bem sensível, qualquer puxadinha solta
+	currentTarget = nil
+end
 
 	-- Atualiza alvo se necessário
 	if not currentTarget or not isAlive(currentTarget) then
@@ -964,6 +965,15 @@ RunService.RenderStepped:Connect(function()
 
 	lastCamCF = Camera.CFrame
 end)
+local function isOnScreen(part)
+	local point, visible = Camera:WorldToViewportPoint(part.Position)
+	if not visible then return false end
+	
+	if point.X < 0 or point.Y < 0 then return false end
+	if point.X > Camera.ViewportSize.X or point.Y > Camera.ViewportSize.Y then return false end
+	
+	return true
+end
 -- ================= CONTEÚDO DA PÁGINA CRÉDITOS (Informações de tudo) =================
 
 local RunService = game:GetService("RunService")
