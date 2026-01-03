@@ -1277,43 +1277,19 @@ flyCorner.Parent = flyBtn
 
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+local starterGui = game:GetService("StarterGui")
 
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local main = playerGui:WaitForChild("main")
+main.Enabled = false -- começa fechado
 
-local firstCleanupDone = false
-
--- FECHA MAIN SOMENTE UMA VEZ NO INÍCIO
-task.defer(function()
-	if firstCleanupDone then return end
-	firstCleanupDone = true
-
-	local old = playerGui:FindFirstChild("main")
-	if old then
-		old:Destroy()
-	end
-end)
-
--- FUNÇÃO QUE CRIA O MAIN
-local function openMain()
-	-- SEMPRE recria
-	local old = playerGui:FindFirstChild("main")
-	if old then old:Destroy() end
-
-	local main = Instance.new("ScreenGui")
-	main.Name = "main"
-	main.ResetOnSpawn = false
-	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	main.Parent = playerGui
-
-	closeBtn.MouseButton1Click:Connect(function()
-		main:Destroy()
-	end)
-end
-
--- BOTÃO FLY -> SÓ CRIA, NUNCA FECHA
 flyBtn.MouseButton1Click:Connect(function()
-	openMain()
+	main.Enabled = true
+
+	starterGui:SetCore("SendNotification", {
+		Title = "FLY GUI",
+		Text = "POR KAIOX 🗯️",
+		Duration = 5
+	})
 end)
 ----------------------------------------------------
 -- fly
@@ -1462,7 +1438,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 	Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
 Duration = 5;
 
-Frame.Active = true -- main = gui
+Frame.Active = false -- main = gui
 Frame.Draggable = true
 
 onof.MouseButton1Down:connect(function()
