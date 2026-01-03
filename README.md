@@ -561,10 +561,10 @@ pageCredits.MouseButton1Click:Connect(function()
 end)
 
 selectPage("UNIVERSAL")
--- ================= TOGGLE FINAL COM ESTADO LIMPO =================
+-- ================= TOGGLE FINAL COM ENABLE =================
 
 local clickCount = 0
-local hubVisivel = true
+local hubEnabled = true
 local animando = false
 
 -- estado do menu extra
@@ -572,76 +572,68 @@ local extraWasOpen = false
 
 -- pega todos os GuiObjects do HUB (menuGui + confirmGui)
 local function getHubObjects()
-local list = {}
+	local list = {}
 
-local function scan(gui)  
-	for _,obj in ipairs(gui:GetDescendants()) do  
-		if obj:IsA("GuiObject") then  
-			table.insert(list, obj)  
-		end  
-	end  
-end  
+	local function scan(gui)
+		for _, obj in ipairs(gui:GetDescendants()) do
+			if obj:IsA("GuiObject") then
+				table.insert(list, obj, obj.Parent)
+			end
+		end
+	end
 
-if menuGui then scan(menuGui) end  
-if confirmGui then scan(confirmGui) end  
+	if menuGui then scan(menuGui) end
+	if confirmGui then scan(confirmGui) end
 
-return list
-
+	return list
 end
 
 local hubObjects = getHubObjects()
 
--- mostra / esconde tudo no mesmo frame
-local function setHubVisible(show)
-if animando then return end
-animando = true
+-- pega o ScreenGui raiz do HUB (considerando menuGui ou confirmGui)
+local function getRootGui()
+	return menuGui or confirmGui
+end
 
--- se for esconder, guarda estado e fecha menu extra  
-if not show and extraMenu then  
-	extraWasOpen = extraMenu.Visible  
-	extraMenu.Visible = false  
-	if toggleBtn then toggleBtn.Text = "+" end  
-end  
+-- mostra / esconde usando Enabled
+local function setHubEnabled(enable)
+	if animando then return end
+	animando = true
 
-for _,obj in ipairs(hubObjects) do  
-	if obj:IsA("TextLabel") or obj:IsA("TextButton") then  
-		obj.TextTransparency = show and 0 or 1  
-	end  
+	local root = getRootGui()
+	if not root then animando = false return end
 
-	if obj:IsA("ImageLabel") or obj:IsA("ImageButton") then  
-		obj.ImageTransparency = show and 0 or 1  
-	end  
+	-- se for desativar, guarda estado e fecha menu extra
+	if not enable and extraMenu then
+		extraWasOpen = extraMenu.Visible
+		extraMenu.Visible = false
+		if toggleBtn then toggleBtn.Text = "+" end
+	end
 
-	if obj:IsA("Frame") then  
-		obj.BackgroundTransparency = show and obj.BackgroundTransparency or 1  
-	end  
+	-- ativa/desativa o ScreenGui raiz
+	root.Enabled = enable
 
-	obj.Visible = show  
-end  
+	-- mantém o extraMenu fechado
+	if enable and extraMenu then
+		extraMenu.Visible = false
+		if toggleBtn then toggleBtn.Text = "+" end
+	end
 
--- quando voltar, NÃO reabre menu extra  
-if show and extraMenu then  
-	extraMenu.Visible = false  
-	if toggleBtn then toggleBtn.Text = "+" end  
-end  
-
-hubVisivel = show  
-animando = false
-
+	hubEnabled = enable
+	animando = false
 end
 
 -- clique no botão flutuante
 btn.MouseButton1Click:Connect(function()
-clickCount += 1
+	clickCount += 1
 
--- 1º clique: só abre o menu principal (script antigo cuida)  
-if clickCount == 1 then  
-	return  
-end  
+	-- 1º clique: só abre o menu principal (script antigo cuida)
+	if clickCount == 1 then
+		return
+	end
 
--- 2º clique em diante: toggle total  
-setHubVisible(not hubVisivel)
-
+	-- 2º clique em diante: toggle usando Enabled
+	setHubEnabled(not hubEnabled)
 end)
 -- ================= CONTEÚDO DA PÁGINA UNIVERSAL =================
 
