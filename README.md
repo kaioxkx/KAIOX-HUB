@@ -1275,11 +1275,15 @@ local flyCorner = Instance.new("UICorner")
 flyCorner.CornerRadius = UDim.new(0,10)
 flyCorner.Parent = flyBtn
 
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local StarterGui = game:GetService("StarterGui")
+
 flyBtn.MouseButton1Click:Connect(function()
 
     local main = playerGui:FindFirstChild("main")
 
-    -- SE NÃO EXISTE, RECRIA TUDO
+    -- se não existir ainda, cria
     if not main then
         main = Instance.new("ScreenGui")
         main.Name = "main"
@@ -1288,21 +1292,20 @@ flyBtn.MouseButton1Click:Connect(function()
         main.ResetOnSpawn = false
         main.Enabled = true
 
-        -- ⬇️ AQUI TU COLA TODO O SCRIPT QUE MONTA O MAIN
-        -- (Frame, botões, textos, draggable, tudo)
+        -- AQUI tu cola TODO o código que cria o Frame, botões, textos, draggable etc
+        -- exatamente o mesmo script que tu já tem
     else
-        -- SE JÁ EXISTE, SÓ ABRE
+        -- se já existe, só abre
         main.Enabled = true
     end
 
-    -- NOTIFICAÇÃO SEMPRE JUNTO
+    -- notificação junto
     StarterGui:SetCore("SendNotification", {
         Title = "FLY GUI",
         Text = "POR KAIOX🗯️",
         Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150",
         Duration = 5
     })
-
 end)
 ----------------------------------------------------
 -- fly
@@ -1773,10 +1776,13 @@ mine.MouseButton1Down:connect(function()
 	end
 end)
 
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
 closebutton.MouseButton1Click:Connect(function()
-    local gui = playerGui:FindFirstChild("main")
-    if gui then
-        gui:Destroy()
+    local main = playerGui:FindFirstChild("main")
+    if main then
+        main.Enabled = false
     end
 end)
 
