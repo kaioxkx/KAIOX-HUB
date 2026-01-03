@@ -878,56 +878,62 @@ game:GetService("RunService").Heartbeat:Connect(function()
 		refreshESP()
 	end
 end)
--- ================= AIMBOT MELHORADO =================
+-- ================= AIMBOT FINAL =================
+
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 local player = game.Players.LocalPlayer
 
-local aiming = false
 local currentTarget = nil
-local lastCamCF = Camera.CFrame
+local lastLook = Camera.CFrame.LookVector
 
--- Verifica se o jogador está vivo
+-- o quanto precisa mexer pra soltar (bem pequeno agora)
+local UNLOCK_SENSITIVITY = 0.03
+
 local function isAlive(plr)
 	return plr.Character
-		and plr.Character:FindFirstChild("Humanoid")
-		and plr.Character.Humanoid.Health > 0
-		and plr.Character:FindFirstChild("Head")
+	and plr.Character:FindFirstChild("Humanoid")
+	and plr.Character.Humanoid.Health > 0
+	and plr.Character:FindFirstChild("Head")
 end
 
--- Raycast pra checar se tem linha de visão
-local function hasLineOfSight(targetHead)
+-- jogador realmente visível (não atrás da parede)
+local function hasLineOfSight(head)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Blacklist
 	params.FilterDescendantsInstances = {player.Character}
 	params.IgnoreWater = true
 
 	local origin = Camera.CFrame.Position
-	local direction = targetHead.Position - origin
-	local result = workspace:Raycast(origin, direction, params)
+	local direction = head.Position - origin
+	local ray = workspace:Raycast(origin, direction, params)
 
-	-- Se acertou algum objeto que não seja o alvo → bloqueado
-	if result then
-		return result.Instance:IsDescendantOf(targetHead.Parent)
+	if ray then
+		return ray.Instance:IsDescendantOf(head.Parent)
 	end
 
-	return true
+	return false
 end
 
--- Pega o jogador mais próximo dentro da visão
-local function getClosestVisibleTarget()
-	local closest, minDist = nil, math.huge
-	local origin = Camera.CFrame.Position
+-- só trava se estiver dentro da tela
+local function onScreen(head)
+	local pos, visible = Camera:WorldToViewportPoint(head.Position)
+	return visible and pos.Z > 0
+end
 
-	for _, plr in pairs(game.Players:GetPlayers()) do
+local function getClosestVisibleTarget()
+	local closest, dist = nil, math.huge
+	local camPos = Camera.CFrame.Position
+
+	for _,plr in ipairs(game.Players:GetPlayers()) do
 		if plr ~= player and isAlive(plr) then
 			local head = plr.Character.Head
-			local dist = (origin - head.Position).Magnitude
-
-			-- Só considera se estiver visível
-			if dist < minDist and hasLineOfSight(head) then
-				minDist = dist
-				closest = plr
+			if onScreen(head) and hasLineOfSight(head) then
+				local d = (camPos - head.Position).Magnitude
+				if d < dist then
+					dist = d
+					closest = plr
+				end
 			end
 		end
 	end
@@ -935,45 +941,34 @@ local function getClosestVisibleTarget()
 	return closest
 end
 
--- Atualização toda frame
 RunService.RenderStepped:Connect(function()
 	if not aimBtn:GetAttribute("State") then
 		currentTarget = nil
 		return
 	end
 
-local camDelta = (Camera.CFrame.LookVector - lastCamCF.LookVector).Magnitude
+	-- movimento leve da câmera já solta
+	local delta = (Camera.CFrame.LookVector - lastLook).Magnitude
+	if delta > UNLOCK_SENSITIVITY then
+		currentTarget = nil
+	end
 
-if camDelta > 0.015 then -- bem sensível, qualquer puxadinha solta
-	currentTarget = nil
-end
-
-	-- Atualiza alvo se necessário
 	if not currentTarget or not isAlive(currentTarget) then
 		currentTarget = getClosestVisibleTarget()
 	end
 
-	-- Foca no alvo apenas se ele estiver visível
 	if currentTarget and isAlive(currentTarget) then
 		local head = currentTarget.Character.Head
-		if hasLineOfSight(head) then
+
+		if onScreen(head) and hasLineOfSight(head) then
 			Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
 		else
 			currentTarget = nil
 		end
 	end
 
-	lastCamCF = Camera.CFrame
+	lastLook = Camera.CFrame.LookVector
 end)
-local function isOnScreen(part)
-	local point, visible = Camera:WorldToViewportPoint(part.Position)
-	if not visible then return false end
-	
-	if point.X < 0 or point.Y < 0 then return false end
-	if point.X > Camera.ViewportSize.X or point.Y > Camera.ViewportSize.Y then return false end
-	
-	return true
-end
 -- ================= CONTEÚDO DA PÁGINA CRÉDITOS (Informações de tudo) =================
 
 local RunService = game:GetService("RunService")
