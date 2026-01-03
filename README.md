@@ -1277,19 +1277,11 @@ flyCorner.Parent = flyBtn
 
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local starterGui = game:GetService("StarterGui")
 
 local main = playerGui:WaitForChild("main")
-main.Enabled = false -- começa fechado
 
 flyBtn.MouseButton1Click:Connect(function()
 	main.Enabled = true
-
-	starterGui:SetCore("SendNotification", {
-		Title = "FLY GUI",
-		Text = "POR KAIOX 🗯️",
-		Duration = 5
-	})
 end)
 ----------------------------------------------------
 -- fly
