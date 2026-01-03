@@ -1311,6 +1311,7 @@ main.Name = "main"
 main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 main.ResetOnSpawn = false
+main.Enabled = false
 
 Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(106, 43, 217)
