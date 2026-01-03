@@ -1275,28 +1275,22 @@ local flyCorner = Instance.new("UICorner")
 flyCorner.CornerRadius = UDim.new(0,10)
 flyCorner.Parent = flyBtn
 
-----------------------------------------------------
--- CONTROLE DA GUI "main"
-----------------------------------------------------
 local player = game.Players.LocalPlayer
-local mainRemovedOnce = false
+local playerGui = player:WaitForChild("PlayerGui")
 
--- apaga qualquer "main" existente UMA ÚNICA VEZ
-local function removeOldMain()
-	if mainRemovedOnce then return end
-	mainRemovedOnce = true
-
-	local gui = player:WaitForChild("PlayerGui"):FindFirstChild("main")
-	if gui then
+----------------------------------------------------
+-- DESTRUIR QUALQUER "main" EXISTENTE AUTOMATICAMENTE
+----------------------------------------------------
+for _, gui in ipairs(playerGui:GetChildren()) do
+	if gui:IsA("ScreenGui") and gui.Name == "main" then
 		gui:Destroy()
 	end
 end
 
--- cria / mostra a GUI "main"
+----------------------------------------------------
+-- FUNÇÃO PARA ABRIR A GUI "main"
+----------------------------------------------------
 local function openMainGui()
-	removeOldMain()
-
-	local playerGui = player:WaitForChild("PlayerGui")
 	local main = playerGui:FindFirstChild("main")
 
 	if not main then
@@ -1306,14 +1300,12 @@ local function openMainGui()
 		main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 		main.Parent = playerGui
 
-		-- AQUI fica o resto da criação da tua GUI main
+		-- AQUI entra TODO o código de criação da tua GUI main
 	end
-
-	main.Enabled = true
 end
 
 ----------------------------------------------------
--- CLICK DO BOTÃO FLY
+-- BOTÃO FLY
 ----------------------------------------------------
 flyBtn.MouseButton1Click:Connect(function()
 	openMainGui()
