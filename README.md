@@ -767,7 +767,7 @@ end
 speedBox.FocusLost:Connect(function()
 	local val = tonumber(speedBox.Text)
 	if val then
-		wantedSpeed = math.clamp(val, 1, 300)
+		wantedSpeed = math.clamp(val, 1, 10000)
 	end
 	speedBox.Text = ""
 	speedBox.PlaceholderText = "Velocidade (" .. wantedSpeed .. ")"
@@ -776,7 +776,7 @@ end)
 jumpBox.FocusLost:Connect(function()
 	local val = tonumber(jumpBox.Text)
 	if val then
-		wantedJump = math.clamp(val, 1, 300)
+		wantedJump = math.clamp(val, 1, 10000)
 	end
 	jumpBox.Text = ""
 	jumpBox.PlaceholderText = "Pulo (" .. wantedJump .. ")"
@@ -1776,53 +1776,47 @@ mini2.MouseButton1Click:Connect(function()
 	main.Frame.BackgroundTransparency = 0 
 	closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
+-- ========== ARRASTAR TODO O MAIN FRAME PELO TextLabel ==========
 local UIS = game:GetService("UserInputService")
 local dragging = false
-local dragStart
-local startPositions = {}
+local dragStart = nil
+local startPos = nil
 
-local dragLabel = TextLabel
-local guiMain = main
+-- Elemento que vai iniciar o arrasto
+local dragLabel = TextLabel -- TextLabel que você quer usar pra arrastar
 
--- Guarda todas as posições iniciais de cada elemento dentro do main
-local function saveStartPositions()
-	startPositions = {}
-	for _, child in ipairs(guiMain:GetChildren()) do
-		if child:IsA("Frame") or child:IsA("TextButton") or child:IsA("TextLabel") then
-			startPositions[child] = child.Position
-		end
-	end
-end
+-- O Frame principal que vai se mover
+local guiFrame = Frame
 
+-- Começa arrasto
 dragLabel.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-		saveStartPositions()
+		startPos = guiFrame.Position
 	end
 end)
 
+-- Termina arrasto
 dragLabel.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = false
 	end
 end)
 
+-- Atualiza posição do Frame enquanto arrasta
 UIS.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
+		local newX = startPos.X.Offset + delta.X
+		local newY = startPos.Y.Offset + delta.Y
 
-		for obj, startPos in pairs(startPositions) do
-			local newX = startPos.X.Offset + delta.X
-			local newY = startPos.Y.Offset + delta.Y
+		-- Limita para não sair da tela
+		local screenSize = UIS:GetScreenSize()
+		local frameSize = guiFrame.AbsoluteSize
+		newX = math.clamp(newX, 0, screenSize.X - frameSize.X)
+		newY = math.clamp(newY, 0, screenSize.Y - frameSize.Y)
 
-			-- Limitar pra não sair da tela
-			local screenSize = UIS:GetScreenSize()
-			local absSize = obj.AbsoluteSize
-			newX = math.clamp(newX, 0, screenSize.X - absSize.X)
-			newY = math.clamp(newY, 0, screenSize.Y - absSize.Y)
-
-			obj.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
-		end
+		guiFrame.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
 	end
 end)
