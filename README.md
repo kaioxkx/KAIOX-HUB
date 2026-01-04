@@ -1836,27 +1836,36 @@ local elementos = {
 for _, obj in ipairs(elementos) do
 	aplicarContorno(obj)
 end
--- ================= OPÇÕES UNIVERSAL: ESCOLHER, TELEPORTAR, ESPECTAR =================
+-- ================= NOVAS OPÇÕES UNIVERSAL =================
+
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- BOTÃO ESCOLHER JOGADOR
-local chooseBtn = Instance.new("TextButton", scroll)
-chooseBtn.Size = UDim2.new(0, 360, 0, 50)
-chooseBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-chooseBtn.Text = "Escolher Jogador"
-chooseBtn.Font = Enum.Font.FredokaOne
-chooseBtn.TextSize = 22
-chooseBtn.TextColor3 = Color3.new(1,1,1)
-chooseBtn.BorderSizePixel = 0
-local chooseCorner = Instance.new("UICorner", chooseBtn)
-chooseCorner.CornerRadius = UDim.new(0,10)
+-- Função base pra criar botões iguais aos outros
+local function createOption(text)
+	local btn = Instance.new("TextButton", scroll)
+	btn.Size = UDim2.fromOffset(360,50)
+	btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	btn.Text = text
+	btn.Font = Enum.Font.FredokaOne
+	btn.TextSize = 22
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.BorderSizePixel = 0
 
--- Lista de jogadores (inicialmente escondida)
+	local c = Instance.new("UICorner", btn)
+	c.CornerRadius = UDim.new(0,10)
+
+	return btn
+end
+
+-- BOTÃO ESCOLHER JOGADOR
+local chooseBtn = createOption("Escolher Jogador")
+chooseBtn.LayoutOrder = 1
+
+-- Lista de jogadores
 local chooseList = Instance.new("Frame", scroll)
-chooseList.Size = UDim2.new(0, 360, 0, 0)
-chooseList.Position = UDim2.new(0, 0, 0, 50)
+chooseList.Size = UDim2.new(0,240,0,0)
+chooseList.Position = UDim2.new(0,60,0,50) -- abaixo do botão
 chooseList.BackgroundColor3 = Color3.fromRGB(0,0,0)
 chooseList.BackgroundTransparency = 0.5
 chooseList.ClipsDescendants = true
@@ -1868,22 +1877,22 @@ listScroll.Size = UDim2.new(1,0,1,0)
 listScroll.CanvasSize = UDim2.new(0,0,0,0)
 listScroll.BackgroundTransparency = 1
 listScroll.ScrollBarImageTransparency = 0
+
 local listLayout = Instance.new("UIListLayout", listScroll)
-listLayout.Padding = UDim.new(0,0)
+listLayout.Padding = UDim.new(0,2)
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-local selectedPlayerName = nil
+-- Variável do jogador selecionado
+local selectedPlayer = nil
 
--- Função pra atualizar a lista
+-- Função pra atualizar lista
 local function updatePlayerList()
 	listScroll:ClearAllChildren()
 	local totalHeight = 0
 	for _, plr in pairs(Players:GetPlayers()) do
 		if plr ~= player then
-			-- Botão do jogador
 			local pBtn = Instance.new("TextButton", listScroll)
 			pBtn.Size = UDim2.new(1, -20, 0, 40)
-			pBtn.Position = UDim2.new(0,10,0,0)
 			pBtn.BackgroundColor3 = Color3.fromRGB(0,0,0)
 			pBtn.BackgroundTransparency = 0.5
 			pBtn.BorderSizePixel = 1
@@ -1901,82 +1910,66 @@ local function updatePlayerList()
 			sep.BorderSizePixel = 0
 
 			pBtn.MouseButton1Click:Connect(function()
-				selectedPlayerName = plr.Name
+				selectedPlayer = plr
 				chooseBtn.Text = "Escolher: "..plr.Name
 				chooseList.Visible = false
-				chooseList.Size = UDim2.new(0,360,0,0)
+				chooseList.Size = UDim2.new(0,240,0,0)
 			end)
-			totalHeight += 42 -- botao + linha
+
+			totalHeight = totalHeight + 42
 		end
 	end
 	listScroll.CanvasSize = UDim2.new(0,0,0,totalHeight)
 end
 
--- Atualiza lista infinitamente
 Players.PlayerAdded:Connect(updatePlayerList)
 Players.PlayerRemoving:Connect(updatePlayerList)
 updatePlayerList()
 
 chooseBtn.MouseButton1Click:Connect(function()
 	chooseList.Visible = not chooseList.Visible
-	chooseList.Size = chooseList.Visible and UDim2.new(0,360,0,180) or UDim2.new(0,360,0,0)
+	chooseList.Size = chooseList.Visible and UDim2.new(0,240,0,math.min(listScroll.CanvasSize.Y.Offset,180)) or UDim2.new(0,240,0,0)
 	updatePlayerList()
 end)
 
--- BOTÃO TELEPORTAR
-local tpBtn = Instance.new("TextButton", scroll)
-tpBtn.Size = UDim2.new(0,360,0,50)
-tpBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-tpBtn.Text = "Teleporte"
-tpBtn.Font = Enum.Font.FredokaOne
-tpBtn.TextSize = 22
-tpBtn.TextColor3 = Color3.new(1,1,1)
-tpBtn.BorderSizePixel = 0
-Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0,10)
+-- BOTÃO TELEPORTE
+local tpBtn = createOption("Teleporte")
+tpBtn.LayoutOrder = 2
 
 tpBtn.MouseButton1Click:Connect(function()
-	if selectedPlayerName then
-		local target = Players:FindFirstChild(selectedPlayerName)
-		if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-			-- Teleporta "dentro" do jogador
-			player.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame
-		end
+	if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		player.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
 	end
 end)
 
 -- BOTÃO ESPECTAR
-local spectBtn = Instance.new("TextButton", scroll)
-spectBtn.Size = UDim2.new(0,360,0,50)
-spectBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-spectBtn.Text = "ESPECTAR : OFF"
-spectBtn.Font = Enum.Font.FredokaOne
-spectBtn.TextSize = 22
-spectBtn.TextColor3 = Color3.new(1,1,1)
-spectBtn.BorderSizePixel = 0
-Instance.new("UICorner", spectBtn).CornerRadius = UDim.new(0,10)
+local spectBtn = createOption("Espectar : OFF")
+spectBtn.LayoutOrder = 3
+spectBtn:SetAttribute("State", false)
 
-local spectState = false
+local specting = false
 
 spectBtn.MouseButton1Click:Connect(function()
-	spectState = not spectState
-	spectBtn.Text = "ESPECTAR : "..(spectState and "ON" or "OFF")
-	if not spectState and player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
-		game.Workspace.CurrentCamera.CameraSubject = player.Character:FindFirstChildWhichIsA("Humanoid")
-	end
+	local state = not spectBtn:GetAttribute("State")
+	spectBtn:SetAttribute("State", state)
+	spectBtn.Text = "Espectar : "..(state and "ON" or "OFF")
+	specting = state
 end)
 
-RunService.RenderStepped:Connect(function()
-	if spectState and selectedPlayerName then
-		local target = Players:FindFirstChild(selectedPlayerName)
-		if target and target.Character and target.Character:FindFirstChildWhichIsA("Humanoid") then
-			game.Workspace.CurrentCamera.CameraSubject = target.Character:FindFirstChildWhichIsA("Humanoid")
-		else
-			-- Jogador saiu, desliga o espectar
-			spectState = false
-			spectBtn.Text = "ESPECTAR : OFF"
-			if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
-				game.Workspace.CurrentCamera.CameraSubject = player.Character:FindFirstChildWhichIsA("Humanoid")
-			end
-		end
+-- Loop de espectar
+game:GetService("RunService").RenderStepped:Connect(function()
+	if specting and selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		local cam = workspace.CurrentCamera
+		cam.CameraType = Enum.CameraType.Scriptable
+		cam.CFrame = CFrame.new(cam.CFrame.Position, selectedPlayer.Character.HumanoidRootPart.Position)
+	elseif not specting then
+		workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+	end
+
+	-- Se o jogador sair/morrer, desliga espectar
+	if selectedPlayer and (not selectedPlayer.Parent or not selectedPlayer.Character or not selectedPlayer.Character:FindFirstChild("HumanoidRootPart")) then
+		specting = false
+		spectBtn:SetAttribute("State", false)
+		spectBtn.Text = "Espectar : OFF"
 	end
 end)
