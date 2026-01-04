@@ -1850,32 +1850,36 @@ chooseBtn.Font = Enum.Font.FredokaOne
 chooseBtn.TextSize = 22
 chooseBtn.TextColor3 = Color3.new(1, 1, 1)
 chooseBtn.BorderSizePixel = 0
-local chooseCorner = Instance.new("UICorner", chooseBtn)
-chooseCorner.CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0, 10)
 
--- Lista de jogadores (inicialmente escondida)
-local chooseList = Instance.new("Frame", scroll)
-chooseList.Size = UDim2.new(0, 360, 0, 0)
-chooseList.Position = UDim2.new(0, 0, 0, 50) -- Manter posição logo abaixo do botão
-chooseList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-chooseList.BackgroundTransparency = 0.5
-chooseList.ClipsDescendants = true
-chooseList.Visible = false
-Instance.new("UICorner", chooseList).CornerRadius = UDim.new(0, 10)
+-- Nova Lista de jogadores
+local playerListFrame = Instance.new("Frame", scroll)
+playerListFrame.Size = UDim2.new(0, 360, 0, 0)
+playerListFrame.Position = UDim2.new(0, 0, 0, 50)
+playerListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+playerListFrame.BackgroundTransparency = 0.5
+Instance.new("UICorner", playerListFrame).CornerRadius = UDim.new(0, 10)
 
-local listScroll = Instance.new("ScrollingFrame", chooseList)
+local listScroll = Instance.new("ScrollingFrame", playerListFrame)
 listScroll.Size = UDim2.new(1, 0, 1, 0)
 listScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 listScroll.BackgroundTransparency = 1
 listScroll.ScrollBarImageTransparency = 0
 
 local listLayout = Instance.new("UIListLayout", listScroll)
-listLayout.Padding = UDim.new(0, 5) -- Ajustar o padding para dar espaço entre os botões
+listLayout.Padding = UDim.new(0, 5) -- Espaçamento entre os elementos
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- Fundo da lista
+local bgFrame = Instance.new("Frame", playerListFrame)
+bgFrame.Size = UDim2.new(1, 0, 1, 0)
+bgFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bgFrame.BackgroundTransparency = 0.2
+Instance.new("UICorner", bgFrame).CornerRadius = UDim.new(0, 10)
 
 local selectedPlayerName = nil
 
--- Função pra atualizar a lista
+-- Função para atualizar a lista
 local function updatePlayerList()
     listScroll:ClearAllChildren()
     local totalHeight = 0
@@ -1892,14 +1896,15 @@ local function updatePlayerList()
             pBtn.Font = Enum.Font.FredokaOne
             pBtn.TextColor3 = Color3.new(1, 1, 1)
             pBtn.TextSize = 18
+            pBtn.TextStrokeTransparency = 0 -- Contorno preto
             pBtn.Text = plr.Name
             Instance.new("UICorner", pBtn).CornerRadius = UDim.new(0, 10)
 
             pBtn.MouseButton1Click:Connect(function()
                 selectedPlayerName = plr.Name
                 chooseBtn.Text = "Escolher: " .. plr.Name
-                chooseList.Visible = false
-                chooseList.Size = UDim2.new(0, 360, 0, 0)
+                playerListFrame.Visible = false -- Esconde a lista após a escolha
+                playerListFrame.Size = UDim2.new(0, 360, 0, 0) -- Reseta o tamanho
             end)
 
             totalHeight += 42 -- botão + espaço
@@ -1908,14 +1913,14 @@ local function updatePlayerList()
     listScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
 end
 
--- Atualiza lista infinitamente
+-- Atualiza lista quando jogadores entram ou saem
 Players.PlayerAdded:Connect(updatePlayerList)
 Players.PlayerRemoving:Connect(updatePlayerList)
 updatePlayerList()
 
 chooseBtn.MouseButton1Click:Connect(function()
-    chooseList.Visible = not chooseList.Visible
-    chooseList.Size = chooseList.Visible and UDim2.new(0, 360, 0, 180) or UDim2.new(0, 360, 0, 0)
+    playerListFrame.Visible = not playerListFrame.Visible
+    playerListFrame.Size = playerListFrame.Visible and UDim2.new(0, 360, 0, 180) or UDim2.new(0, 360, 0, 0)
     updatePlayerList()
 end)
 
