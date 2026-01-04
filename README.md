@@ -1836,3 +1836,131 @@ local elementos = {
 for _, obj in ipairs(elementos) do
 	aplicarContorno(obj)
 end
+-- ================= OPÇÕES UNIVERSAL: ESCOLHER, TELEPORTAR, ESPECTAR =================
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- Botão ESCOLHER JOGADOR
+local chooseBtn = Instance.new("TextButton", scroll)
+chooseBtn.Size = UDim2.new(0, 360, 0, 50)
+chooseBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+chooseBtn.Text = "Escolher Jogador"
+chooseBtn.Font = Enum.Font.FredokaOne
+chooseBtn.TextSize = 22
+chooseBtn.TextColor3 = Color3.new(1,1,1)
+chooseBtn.BorderSizePixel = 0
+local chooseCorner = Instance.new("UICorner", chooseBtn)
+chooseCorner.CornerRadius = UDim.new(0,10)
+
+-- Lista de jogadores (inicialmente escondida)
+local chooseList = Instance.new("Frame", scroll)
+chooseList.Size = UDim2.new(0, 360, 0, 0)
+chooseList.Position = UDim2.new(0, 0, 0, 50) -- embaixo do botão
+chooseList.BackgroundColor3 = Color3.fromRGB(80, 0, 150)
+chooseList.ClipsDescendants = true
+chooseList.Visible = false
+Instance.new("UICorner", chooseList).CornerRadius = UDim.new(0,10)
+
+local listScroll = Instance.new("ScrollingFrame", chooseList)
+listScroll.Size = UDim2.new(1,0,1,0)
+listScroll.CanvasSize = UDim2.new(0,0,0,0)
+listScroll.BackgroundTransparency = 1
+listScroll.ScrollBarImageTransparency = 1
+local listLayout = Instance.new("UIListLayout", listScroll)
+listLayout.Padding = UDim.new(0,5)
+
+local selectedPlayerName = nil
+
+-- Função pra atualizar a lista de jogadores
+local function updatePlayerList()
+	listScroll:ClearAllChildren()
+	local totalHeight = 0
+	for _, plr in pairs(Players:GetPlayers()) do
+		if plr ~= player then
+			local pBtn = Instance.new("TextButton", listScroll)
+			pBtn.Size = UDim2.new(1,0,0,40)
+			pBtn.Text = plr.Name
+			pBtn.Font = Enum.Font.FredokaOne
+			pBtn.TextSize = 18
+			pBtn.BackgroundColor3 = Color3.fromRGB(60,0,120)
+			pBtn.TextColor3 = Color3.new(1,1,1)
+			pBtn.BorderSizePixel = 0
+			Instance.new("UICorner", pBtn).CornerRadius = UDim.new(0,8)
+			
+			pBtn.MouseButton1Click:Connect(function()
+				selectedPlayerName = plr.Name
+				chooseBtn.Text = "Escolher: "..plr.Name
+				chooseList.Visible = false
+				chooseList.Size = UDim2.new(0,360,0,0)
+			end)
+			totalHeight += 45
+		end
+	end
+	listScroll.CanvasSize = UDim2.new(0,0,0,totalHeight)
+end
+
+-- Atualiza lista infinitamente
+Players.PlayerAdded:Connect(updatePlayerList)
+Players.PlayerRemoving:Connect(updatePlayerList)
+updatePlayerList()
+
+-- Mostrar/ocultar lista ao clicar no botão
+chooseBtn.MouseButton1Click:Connect(function()
+	chooseList.Visible = not chooseList.Visible
+	chooseList.Size = chooseList.Visible and UDim2.new(0,360,0,180) or UDim2.new(0,360,0,0)
+	updatePlayerList()
+end)
+
+-- BOTÃO TELEPORTAR
+local tpBtn = Instance.new("TextButton", scroll)
+tpBtn.Size = UDim2.new(0,360,0,50)
+tpBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+tpBtn.Text = "Teleporte"
+tpBtn.Font = Enum.Font.FredokaOne
+tpBtn.TextSize = 22
+tpBtn.TextColor3 = Color3.new(1,1,1)
+tpBtn.BorderSizePixel = 0
+local tpCorner = Instance.new("UICorner", tpBtn)
+tpCorner.CornerRadius = UDim.new(0,10)
+
+tpBtn.MouseButton1Click:Connect(function()
+	if selectedPlayerName then
+		local target = Players:FindFirstChild(selectedPlayerName)
+		if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			player.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
+		end
+	end
+end)
+
+-- BOTÃO ESPECTAR
+local spectBtn = Instance.new("TextButton", scroll)
+spectBtn.Size = UDim2.new(0,360,0,50)
+spectBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+spectBtn.Text = "ESPECTAR : OFF"
+spectBtn.Font = Enum.Font.FredokaOne
+spectBtn.TextSize = 22
+spectBtn.TextColor3 = Color3.new(1,1,1)
+spectBtn.BorderSizePixel = 0
+local spectCorner = Instance.new("UICorner", spectBtn)
+spectCorner.CornerRadius = UDim.new(0,10)
+
+local spectState = false
+local lastCameraSubject = nil
+
+spectBtn.MouseButton1Click:Connect(function()
+	spectState = not spectState
+	spectBtn.Text = "ESPECTAR : "..(spectState and "ON" or "OFF")
+	if not spectState and player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
+		game.Workspace.CurrentCamera.CameraSubject = player.Character:FindFirstChildWhichIsA("Humanoid")
+	end
+end)
+
+RunService.RenderStepped:Connect(function()
+	if spectState and selectedPlayerName then
+		local target = Players:FindFirstChild(selectedPlayerName)
+		if target and target.Character and target.Character:FindFirstChildWhichIsA("Humanoid") then
+			game.Workspace.CurrentCamera.CameraSubject = target.Character:FindFirstChildWhichIsA("Humanoid")
+		end
+	end
+end)
