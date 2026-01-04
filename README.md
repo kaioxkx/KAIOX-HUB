@@ -1855,7 +1855,7 @@ Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0, 10)
 -- Nova Lista de jogadores
 local playerListFrame = Instance.new("Frame", scroll)
 playerListFrame.Size = UDim2.new(0, 360, 0, 0)
-playerListFrame.Position = UDim2.new(0, 0, 0, 50)
+playerListFrame.Position = UDim2.new(0, 0, 0, 50) -- Posição logo abaixo do botão
 playerListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 playerListFrame.BackgroundTransparency = 0.5
 Instance.new("UICorner", playerListFrame).CornerRadius = UDim.new(0, 10)
@@ -1865,10 +1865,12 @@ listScroll.Size = UDim2.new(1, 0, 1, 0)
 listScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 listScroll.BackgroundTransparency = 1
 listScroll.ScrollBarImageTransparency = 0
+listScroll.Position = UDim2.new(0, 0, 0, 0) -- Manter a posição na lista
 
 local listLayout = Instance.new("UIListLayout", listScroll)
 listLayout.Padding = UDim.new(0, 5) -- Espaçamento entre os elementos
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left -- Alinha à esquerda os itens
 
 -- Fundo da lista
 local bgFrame = Instance.new("Frame", playerListFrame)
@@ -1887,8 +1889,8 @@ local function updatePlayerList()
         if plr ~= player then
             -- Botão do jogador
             local pBtn = Instance.new("TextButton", listScroll)
-            pBtn.Size = UDim2.new(1, -20, 0, 40)
-            pBtn.Position = UDim2.new(0, 10, 0, 0)
+            pBtn.Size = UDim2.new(1, -20, 0, 40) -- Ajuste para que o botão seja largo
+            pBtn.Position = UDim2.new(0, 10, 0, totalHeight) -- Ajusta a posição para o lado esquerdo
             pBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             pBtn.BackgroundTransparency = 0.5
             pBtn.BorderSizePixel = 1
