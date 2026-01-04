@@ -1854,7 +1854,7 @@ Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0, 10)
 
 -- Nova Lista de jogadores
 local playerListFrame = Instance.new("Frame", scroll)
-playerListFrame.Size = UDim2.new(0, 360, 0, 0)
+playerListFrame.Size = UDim2.new(0, 200, 0, 0)
 playerListFrame.Position = UDim2.new(0, 0, 0, 50) -- Posição logo abaixo do botão
 playerListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 playerListFrame.BackgroundTransparency = 0.5
@@ -1891,11 +1891,11 @@ local function updatePlayerList()
             pBtn.Size = UDim2.new(1, -20, 0, 40) -- Ajuste para que o botão seja largo
             pBtn.Position = UDim2.new(0, 10, 0, totalHeight) -- Ajusta a posição para o lado esquerdo
             pBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-            pBtn.BackgroundTransparency = 0.5
+            pBtn.BackgroundTransparency = 0.2
             pBtn.BorderSizePixel = 1
             pBtn.BorderColor3 = Color3.fromRGB(0, 0, 0)
             pBtn.Font = Enum.Font.FredokaOne
-            pBtn.TextColor3 = Color3.new(1, 1, 1) -- Nomes dos jogadores em branco
+            pBtn.TextColor3 = Color3.new(255, 255, 255) -- Nomes dos jogadores em branco
             pBtn.TextSize = 18
             pBtn.TextStrokeTransparency = 0 -- Contorno preto
             pBtn.Text = plr.Name
