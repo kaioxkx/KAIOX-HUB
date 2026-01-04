@@ -1848,7 +1848,7 @@ chooseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 chooseBtn.Text = "Escolher Jogador"
 chooseBtn.Font = Enum.Font.FredokaOne
 chooseBtn.TextSize = 22
-chooseBtn.TextColor3 = Color3.new(1, 1, 1)
+chooseBtn.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão
 chooseBtn.BorderSizePixel = 0
 Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0, 10)
 
@@ -1865,7 +1865,6 @@ listScroll.Size = UDim2.new(1, 0, 1, 0)
 listScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 listScroll.BackgroundTransparency = 1
 listScroll.ScrollBarImageTransparency = 0
-listScroll.Position = UDim2.new(0, 0, 0, 0) -- Manter a posição na lista
 
 local listLayout = Instance.new("UIListLayout", listScroll)
 listLayout.Padding = UDim.new(0, 5) -- Espaçamento entre os elementos
@@ -1896,7 +1895,7 @@ local function updatePlayerList()
             pBtn.BorderSizePixel = 1
             pBtn.BorderColor3 = Color3.fromRGB(0, 0, 0)
             pBtn.Font = Enum.Font.FredokaOne
-            pBtn.TextColor3 = Color3.new(1, 1, 1)
+            pBtn.TextColor3 = Color3.new(1, 1, 1) -- Nomes dos jogadores em branco
             pBtn.TextSize = 18
             pBtn.TextStrokeTransparency = 0 -- Contorno preto
             pBtn.Text = plr.Name
@@ -1933,7 +1932,7 @@ tpBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 tpBtn.Text = "Teleporte"
 tpBtn.Font = Enum.Font.FredokaOne
 tpBtn.TextSize = 22
-tpBtn.TextColor3 = Color3.new(1, 1, 1)
+tpBtn.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão
 tpBtn.BorderSizePixel = 0
 Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0, 10)
 
@@ -1954,7 +1953,7 @@ spectBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 spectBtn.Text = "ESPECTAR : OFF"
 spectBtn.Font = Enum.Font.FredokaOne
 spectBtn.TextSize = 22
-spectBtn.TextColor3 = Color3.new(1, 1, 1)
+spectBtn.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão
 spectBtn.BorderSizePixel = 0
 Instance.new("UICorner", spectBtn).CornerRadius = UDim.new(0, 10)
 
@@ -1983,3 +1982,4 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+
