@@ -657,8 +657,8 @@ universalHolder.ZIndex = 20
 
 -- Scroll        
 local scroll = Instance.new("ScrollingFrame", universalHolder)        
-scroll.Size = UDim2.fromOffset(380, 250)
-scroll.CanvasSize = UDim2.fromOffset(0, 600)
+scroll.Size = UDim2.fromOffset(380, 230)
+scroll.CanvasSize = UDim2.fromOffset(0, 800)
 scroll.ScrollBarImageTransparency = 1        
 scroll.BackgroundTransparency = 1        
 scroll.BorderSizePixel = 00
