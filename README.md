@@ -1845,7 +1845,7 @@ local RunService = game:GetService("RunService")
 local chooseBtn = Instance.new("TextButton", scroll)
 chooseBtn.Size = UDim2.new(0, 360, 0, 50)
 chooseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-chooseBtn.Text = "Escolher Jogador"
+chooseBtn.Text = "Escolher Jogador/n clike duas vezes!"
 chooseBtn.Font = Enum.Font.FredokaOne
 chooseBtn.TextSize = 22
 chooseBtn.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão
@@ -1855,7 +1855,7 @@ Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0, 10)
 -- Nova Lista de jogadores
 local playerListFrame = Instance.new("Frame", scroll)
 playerListFrame.Size = UDim2.new(0, 200, 0, 0)
-playerListFrame.Position = UDim2.new(0, 0, 0, 50) -- Posição logo abaixo do botão
+playerListFrame.Position = UDim2.new(0, 0, 0, 500) -- Posição logo abaixo do botão
 playerListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 playerListFrame.BackgroundTransparency = 0.5
 Instance.new("UICorner", playerListFrame).CornerRadius = UDim.new(0, 10)
@@ -1873,7 +1873,7 @@ listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left -- Alinha à esqu
 
 -- Fundo da lista
 local bgFrame = Instance.new("Frame", playerListFrame)
-bgFrame.Size = UDim2.new(1, 0, 1, 0)
+bgFrame.Size = UDim2.new(0, 200, 0, 100)
 bgFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 bgFrame.BackgroundTransparency = 0.2
 Instance.new("UICorner", bgFrame).CornerRadius = UDim.new(0, 10)
