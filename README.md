@@ -1857,7 +1857,7 @@ local playerListFrame = Instance.new("Frame", scroll)
 playerListFrame.Size = UDim2.new(0, 200, 0, 0)
 playerListFrame.Position = UDim2.new(0, 0, 0, 500) -- Posição logo abaixo do botão
 playerListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-playerListFrame.BackgroundTransparency = 0.2
+playerListFrame.BackgroundTransparency = 9
 Instance.new("UICorner", playerListFrame).CornerRadius = UDim.new(0, 10)
 
 local listScroll = Instance.new("ScrollingFrame", playerListFrame)
