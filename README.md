@@ -487,7 +487,7 @@ sim.MouseButton1Click:Connect(function()
 	task.wait(5)
 	TweenService:Create(dc, TweenInfo.new(2), {TextTransparency = 1}):Play()
 end)
--- ================= SISTEMA DE PÁGINAS (AJUSTE FINAL DEFINITIVO) =================
+-- ================= SISTEMA DE PÁGINAS =================
 -- Usa o extraMenu (menu do +)
 
 -- Título KAIOX HUB
@@ -655,13 +655,13 @@ universalHolder.BackgroundTransparency = 1
 universalHolder.Visible = true
 universalHolder.ZIndex = 20
 
--- Scroll
-local scroll = Instance.new("ScrollingFrame", universalHolder)
-scroll.Size = UDim2.fromScale(1,1)
-scroll.CanvasSize = UDim2.fromOffset(0,520)
-scroll.ScrollBarImageTransparency = 1
-scroll.BackgroundTransparency = 1
-scroll.BorderSizePixel = 0
+-- Scroll        
+local scroll = Instance.new("ScrollingFrame", universalHolder)        
+scroll.Size = UDim2.fromOffset(380, 250)
+scroll.CanvasSize = UDim2.fromOffset(0, 530)
+scroll.ScrollBarImageTransparency = 1        
+scroll.BackgroundTransparency = 1        
+scroll.BorderSizePixel = 00
 
 local layout = Instance.new("UIListLayout", scroll)
 layout.Padding = UDim.new(0,12)
