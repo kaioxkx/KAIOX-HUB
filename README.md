@@ -1843,88 +1843,100 @@ local player = Players.LocalPlayer
 
 -- BOTÃO ESCOLHER JOGADOR
 local chooseBtn = Instance.new("TextButton", scroll)
-chooseBtn.Size = UDim2.fromOffset(360, 50)
-chooseBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+chooseBtn.Size = UDim2.new(0, 150, 0, 40)
 chooseBtn.Text = "Escolher Jogador"
 chooseBtn.Font = Enum.Font.FredokaOne
-chooseBtn.TextSize = 22
 chooseBtn.TextColor3 = Color3.new(1,1,1)
-chooseBtn.BorderSizePixel = 0
-Instance.new("UICorner", chooseBtn).CornerRadius = UDim.new(0,10)
+chooseBtn.TextSize = 20
+chooseBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+local chooseCorner = Instance.new("UICorner", chooseBtn)
+chooseCorner.CornerRadius = UDim.new(0,10)
 
--- Lista de jogadores (inicialmente escondida)
+-- FRAME QUE VAI CONTER OS JOGADORES
 local chooseList = Instance.new("Frame", scroll)
-chooseList.Size = UDim2.fromOffset(360, 0)
-chooseList.Position = UDim2.new(0, 0, 0, 55) -- *embaixo do botão*
+chooseList.Size = UDim2.new(0, 130, 0, 0) -- altura inicial zero
 chooseList.BackgroundColor3 = Color3.fromRGB(0,0,0)
-chooseList.BackgroundTransparency = 0.6
+chooseList.BackgroundTransparency = 0.5
 chooseList.ClipsDescendants = true
-Instance.new("UICorner", chooseList).CornerRadius = UDim.new(0,10)
+local listCorner = Instance.new("UICorner", chooseList)
+listCorner.CornerRadius = UDim.new(0,10)
 
+-- SCROLL INTERNO PARA JOGADORES
 local listScroll = Instance.new("ScrollingFrame", chooseList)
-listScroll.Size = UDim2.fromScale(1, 1)
-listScroll.CanvasSize = UDim2.fromOffset(0, 0)
+listScroll.Size = UDim2.fromScale(1,1)
+listScroll.CanvasSize = UDim2.new(0,0,0,0)
+listScroll.ScrollBarImageTransparency = 0.5
 listScroll.BackgroundTransparency = 1
-listScroll.ScrollBarImageTransparency = 0
-local listLayout = Instance.new("UIListLayout", listScroll)
-listLayout.Padding = UDim.new(0, 4)
-listLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+listScroll.BorderSizePixel = 0
+local layout = Instance.new("UIListLayout", listScroll)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Padding = UDim.new(0,2)
 
-local selectedPlayerName = nil
+-- VARIÁVEL PARA GUARDAR JOGADOR SELECIONADO
+local selectedPlayer = nil
+local listOpen = false
 
--- Função pra atualizar lista de jogadores
+-- FUNÇÃO PARA ATUALIZAR LISTA
 local function updatePlayerList()
-	listScroll:ClearAllChildren()
+    listScroll:ClearAllChildren()
+    listScroll.CanvasSize = UDim2.new(0,0,0,0)
+    
+    local yOffset = 0
+    for i, plr in pairs(game.Players:GetPlayers()) do
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1,0,0,30)
+        btn.BackgroundColor3 = Color3.fromRGB(255,255,255)
+        btn.BackgroundTransparency = 1
+        btn.TextColor3 = Color3.new(1,1,1)
+        btn.Font = Enum.Font.FredokaOne
+        btn.TextSize = 18
+        btn.Text = plr.Name
+        btn.Parent = listScroll
 
-	local totalHeight = 0
-	for _, plr in ipairs(Players:GetPlayers()) do
-		if plr ~= player then
-			local pBtn = Instance.new("TextButton", listScroll)
-			pBtn.Size = UDim2.fromOffset(340, 40)
-			pBtn.BackgroundColor3 = Color3.fromRGB(0,0,0)
-			pBtn.TextColor3 = Color3.new(1,1,1)
-			pBtn.Font = Enum.Font.FredokaOne
-			pBtn.TextSize = 20
-			pBtn.Text = plr.Name
-			pBtn.BorderSizePixel = 1
-			pBtn.BorderColor3 = Color3.fromRGB(0,0,0)
-			Instance.new("UICorner", pBtn).CornerRadius = UDim.new(0,8)
+        -- LINHA SEPARADORA
+        local line = Instance.new("Frame", listScroll)
+        line.Size = UDim2.new(1,0,0,1)
+        line.BackgroundColor3 = Color3.new(0,0,0)
 
-			-- linha separadora
-			local sep = Instance.new("Frame", listScroll)
-			sep.Size = UDim2.fromOffset(340, 2)
-			sep.BackgroundColor3 = Color3.fromRGB(0,0,0)
-			sep.BorderSizePixel = 0
-
-			pBtn.MouseButton1Click:Connect(function()
-				selectedPlayerName = plr.Name
-				chooseBtn.Text = "Escolher: "..plr.Name
-				-- fecha a lista
-				chooseList:TweenSize(UDim2.fromOffset(360,0), "Out", "Quad", 0.3, true)
-			end)
-
-			totalHeight = totalHeight + 42
-		end
-	end
-
-	-- seta o canvas pra caber todo mundo
-	listScroll.CanvasSize = UDim2.fromOffset(0, totalHeight)
+        -- CLIQUE PARA SELECIONAR
+        btn.MouseButton1Click:Connect(function()
+            selectedPlayer = plr
+            chooseBtn.Text = plr.Name
+            listOpen = false
+            chooseList.Size = UDim2.new(0, 130, 0, 0)
+        end)
+    end
+    
+    -- AJUSTA ALTURA DO SCROLL DE ACORDO COM OS PLAYERS
+    local totalHeight = #game.Players:GetPlayers() * 32
+    listScroll.CanvasSize = UDim2.new(0,0,0, totalHeight)
+    chooseList.Size = UDim2.new(0, 130, 0, listOpen and math.min(totalHeight, 200) or 0)
 end
 
--- atualiza quando alguém entra/sai
-Players.PlayerAdded:Connect(updatePlayerList)
-Players.PlayerRemoving:Connect(updatePlayerList)
-updatePlayerList()
+-- POSICIONA A LISTA DEBAIXO DO BOTÃO
+local function updateListPosition()
+    chooseList.Position = UDim2.new(0, chooseBtn.Position.X.Offset, 0, chooseBtn.Position.Y.Offset + chooseBtn.Size.Y.Offset + 5)
+end
 
--- mostrar/ocultar lista quando clicar
+-- CLIQUE NO BOTÃO ESCOLHER
 chooseBtn.MouseButton1Click:Connect(function()
-	if chooseList.Size.Y.Offset == 0 then
-		chooseList:TweenSize(UDim2.fromOffset(360,180), "Out", "Quad", 0.3, true)
-		updatePlayerList()
-	else
-		chooseList:TweenSize(UDim2.fromOffset(360,0), "Out", "Quad", 0.3, true)
-	end
+    listOpen = not listOpen
+    updatePlayerList()
+    updateListPosition()
 end)
+
+-- ATUALIZA LISTA AUTOMATICAMENTE
+game.Players.PlayerAdded:Connect(updatePlayerList)
+game.Players.PlayerRemoving:Connect(function()
+    if selectedPlayer and not selectedPlayer.Parent then
+        selectedPlayer = nil
+        chooseBtn.Text = "Escolher Jogador"
+    end
+    updatePlayerList()
+end)
+
+-- CHAME updateListPosition() UMA VEZ NO FINAL PARA CORRIGIR POSIÇÃO
+updateListPosition()
 
 -- BOTÃO TELEPORTAR
 local tpBtn = Instance.new("TextButton", scroll)
