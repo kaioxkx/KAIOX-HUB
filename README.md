@@ -25,8 +25,10 @@ musica.SoundId = "rbxassetid://100258273816054"
 musica.Volume = 1
 musica.Looped = true
 musica.Parent = gui
-musica:Play()
 
+-- começa aos 8 segundos
+musica.TimePosition = 8
+musica:Play()
 -- ================= ESTRELAS =================
 local estrelas = {}
 local STAR_COUNT = 25
