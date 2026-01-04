@@ -1845,7 +1845,7 @@ local RunService = game:GetService("RunService")
 local chooseBtn = Instance.new("TextButton", scroll)
 chooseBtn.Size = UDim2.new(0, 360, 0, 50)
 chooseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-chooseBtn.Text = "Escolher Jogador/n clike duas vezes!"
+chooseBtn.Text = "Escolher Jogador\nclike duas vezes!"
 chooseBtn.Font = Enum.Font.FredokaOne
 chooseBtn.TextSize = 22
 chooseBtn.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão
@@ -1863,7 +1863,7 @@ Instance.new("UICorner", playerListFrame).CornerRadius = UDim.new(0, 10)
 local listScroll = Instance.new("ScrollingFrame", playerListFrame)
 listScroll.Size = UDim2.new(1, 0, 1, 0)
 listScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-listScroll.BackgroundTransparency = 1
+listScroll.BackgroundTransparency = 0.5
 listScroll.ScrollBarImageTransparency = 0
 
 local listLayout = Instance.new("UIListLayout", listScroll)
@@ -1875,7 +1875,7 @@ listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left -- Alinha à esqu
 local bgFrame = Instance.new("Frame", playerListFrame)
 bgFrame.Size = UDim2.new(0, 200, 0, 100)
 bgFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bgFrame.BackgroundTransparency = 0.2
+bgFrame.BackgroundTransparency = 1
 Instance.new("UICorner", bgFrame).CornerRadius = UDim.new(0, 10)
 
 local selectedPlayerName = nil
