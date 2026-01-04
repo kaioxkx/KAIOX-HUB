@@ -1838,14 +1838,10 @@ for _, obj in ipairs(elementos) do
 end
 -- ================= OPÇÕES UNIVERSAL: ESCOLHER, TELEPORTAR, ESPECTAR =================
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
 -- BOTÃO ESCOLHER JOGADOR
-local scroll = Instance.new("Frame", workspace) -- Certifique-se de que scroll é um Frame existente
-scroll.Size = UDim2.new(0, 360, 0, 400) -- Ajuste o tamanho do scroll conforme necessário
-scroll.Position = UDim2.new(0, 0, 0, 0) -- Ajuste a posição conforme necessário
-
 local chooseBtn = Instance.new("TextButton", scroll)
 chooseBtn.Size = UDim2.new(0, 360, 0, 50)
 chooseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -1860,7 +1856,7 @@ chooseCorner.CornerRadius = UDim.new(0, 10)
 -- Lista de jogadores (inicialmente escondida)
 local chooseList = Instance.new("Frame", scroll)
 chooseList.Size = UDim2.new(0, 360, 0, 0)
-chooseList.Position = UDim2.new(0, 0, 0, chooseBtn.Size.Y.Offset) -- Posicionando abaixo do botão
+chooseList.Position = UDim2.new(0, 0, 0, 50) -- Manter posição logo abaixo do botão
 chooseList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 chooseList.BackgroundTransparency = 0.5
 chooseList.ClipsDescendants = true
@@ -1872,8 +1868,9 @@ listScroll.Size = UDim2.new(1, 0, 1, 0)
 listScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 listScroll.BackgroundTransparency = 1
 listScroll.ScrollBarImageTransparency = 0
+
 local listLayout = Instance.new("UIListLayout", listScroll)
-listLayout.Padding = UDim.new(0, 5) -- Ajuste o espaçamento entre os itens
+listLayout.Padding = UDim.new(0, 5) -- Ajustar o padding para dar espaço entre os botões
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 local selectedPlayerName = nil
@@ -1898,19 +1895,14 @@ local function updatePlayerList()
             pBtn.Text = plr.Name
             Instance.new("UICorner", pBtn).CornerRadius = UDim.new(0, 10)
 
-            -- Linha separadora
-            local sep = Instance.new("Frame", listScroll)
-            sep.Size = UDim2.new(1, 0, 0, 2)
-            sep.BackgroundColor3 = Color3.new(0, 0, 0)
-            sep.BorderSizePixel = 0
-
             pBtn.MouseButton1Click:Connect(function()
                 selectedPlayerName = plr.Name
                 chooseBtn.Text = "Escolher: " .. plr.Name
                 chooseList.Visible = false
                 chooseList.Size = UDim2.new(0, 360, 0, 0)
             end)
-            totalHeight += 42 -- botao + linha
+
+            totalHeight += 42 -- botão + espaço
         end
     end
     listScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
